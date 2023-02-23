@@ -1,6 +1,6 @@
 message(NOTICE "[Version]: 3.21.12")
 
-include(addTargetToFolder)
+include(target_put_into_folder)
 
 # Environment Configuration
 if(WIN32)
@@ -67,7 +67,7 @@ function(makeProtobufTarget targetName absSrcPath absGenPath)
 
     # 4. Archive
     target_sources(${targetName} PRIVATE ${allProtoFiles})
-    addTargetToFolder(${targetName} "${EXTERNAL_DEPENDENCY_FOLADER}/Protocol_Buffers")
+    target_put_into_folder(${targetName} "AlbedoHub/Protocols")
     
     message(NOTICE "<Protobuf> Generated a target - ${targetName}")
 endfunction(makeProtobufTarget)

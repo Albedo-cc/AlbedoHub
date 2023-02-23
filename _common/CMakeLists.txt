@@ -5,9 +5,15 @@ if (NOT TARGET Albedo::log)
 endif()
 
 # Albedo Net
-if (NOT TARGET Albedo::log)
+if (NOT TARGET Albedo::net)
     message(STATUS "\nLoading Albedo Log (Albedo::net)")
     add_subdirectory(AlbedoNet)
+endif()
+
+# JSON
+if (NOT TARGET JSON)
+    message(STATUS "\nLoading nlohmann-json (JSON)")
+    add_subdirectory(JSON-nlohmann)
 endif()
 
 # Protocol Buffers
@@ -19,3 +25,12 @@ if (NOT TARGET protobuf)
     # option(protobuf_BUILD_PROTOC_BINARIES "" OFF)
     add_subdirectory(protobuf-3.21.12)
 endif()
+
+add_library(AlbedoHub_Common_Libs INTERFACE)
+target_link_libraries(AlbedoHub_Common_Libs
+    INTERFACE
+    Albedo::log
+    Albedo::net
+    JSON
+    protobuf
+)
