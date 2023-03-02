@@ -9,7 +9,7 @@ set(CMAKE_CXX_EXTENSIONS OFF) # Vendor-specific Extensions
 add_subdirectory(_extern)
 add_subdirectory(_core)
 
-target_link_libraries(${PROJECT_NAME} 
+target_link_libraries(${PROJECT_NAME}
     PRIVATE 
     AlbedoHub_Common_Libs
     AlbedoHub_Client_Libs)

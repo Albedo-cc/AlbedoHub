@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package Message;
+
+enum Type
+{
+    FAILED = 0;
+    SUCCESS = 1;
+    EXIT = 3;
+    REGISTER = 4;
+    LOGIN = 5;
+}

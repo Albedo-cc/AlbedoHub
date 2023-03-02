@@ -64,10 +64,10 @@ function(makeProtobufTarget targetName absSrcPath absGenPath)
     # 3. Create new protobuf target
     add_library(${targetName} STATIC ${ProtoHeaders} ${ProtoSources})
     target_link_libraries(${targetName} PUBLIC protobuf)
+    target_include_directories(${targetName} INTERFACE ${absGenPath})
 
     # 4. Archive
     target_sources(${targetName} PRIVATE ${allProtoFiles})
-    target_put_into_folder(${targetName} "AlbedoHub/Protocols")
     
     message(NOTICE "<Protobuf> Generated a target - ${targetName}")
 endfunction(makeProtobufTarget)
