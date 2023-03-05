@@ -1,19 +1,18 @@
 #include <AlbedoLog.hpp>
-#define ALBEDONET_SERVER
-#include <AlbedoNet.hpp>
 
-#include "service/database/database.h"
-#include "service/database/tables/authentication.h"
-
-namespace Albedo {
-namespace Hub{
-namespace server
+int main(int argc, char* argv[])
 {
-	
-	
+	using namespace Albedo;
+	try
+	{
 
-}}} // namespace Albedo::Hub::server
-
+	}
+	catch (std::runtime_error& e)
+	{
+		log::error("Albedo Hub (Server): {}", e.what());
+	}
+	return 0;
+}
 //
 ////AuthenTable::insert("745574309@qq.com", net::Hash::SHA256("123321"));
 //

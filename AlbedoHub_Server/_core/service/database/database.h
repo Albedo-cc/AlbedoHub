@@ -4,11 +4,6 @@
 #include <AlbedoPattern.hpp>
 #include <AlbedoDB.hpp>
 
-#include <memory>
-#include <string>
-#include <unordered_map>
-#include <sstream>
-
 namespace Albedo{
 namespace Hub{
 namespace server

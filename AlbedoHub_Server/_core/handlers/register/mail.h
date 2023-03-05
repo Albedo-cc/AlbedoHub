@@ -10,13 +10,27 @@
 */
 struct register_mail
 {
-    static void set_name(const char* name)
+    static void set_name(const std::string& name)
     {
-        register_mail::content.replace(6411, 40, name);
+        if (name.size() > 40) throw std::runtime_error("Name is longer than 40 Bytes!");
+        static const size_t pos_name = register_mail::content.rfind("[--------$First$Name$(40Bytes)$--------]"); 
+        static std::string placeholder = "                                        "; // 40B blank
+        placeholder.replace(0, name.size(), std::string(name));
+        register_mail::content.replace(pos_name, 40, placeholder);
     }
-    static void set_vcode(const char* verification_code)
+
+    static void set_name(const std::u8string& name)
     {
-        register_mail::content.replace(7038, 6, verification_code);
+        set_name(reinterpret_cast<const char*>(name.c_str()));
+    }
+
+    static void set_vcode(const std::string& verification_code)
+    {
+        if (verification_code.size() > 6) throw std::runtime_error("Verification Code is longer than 6 Bytes!");
+        static const size_t pos_vcode = register_mail::content.rfind("$CODE$");
+        static std::string placeholder = "      "; // 6B blank
+        placeholder.replace(0, verification_code.size(), verification_code);
+        register_mail::content.replace(pos_vcode, 6, placeholder);
     }
     static const std::string& get() { return register_mail::content; }
 
@@ -24,9 +38,6 @@ private:
     static std::string content;
 };
 
-/*
-Note: You must change the replace postion in static functions of register_mail after any modification!!!
-*/
 std::string register_mail::content =
 "<!DOCTYPE html>"
 "<html xmlns=\"http://www.w3.org/1999/xhtml\" xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:o=\"urn:schemas-microsoft-com:office:office\">"
@@ -200,7 +211,7 @@ std::string register_mail::content =
 "<div style=\"font-family:open Sans Helvetica, Arial, sans-serif;font-size:22px;line-height:1;text-align:left;color:#ffffff;\"><span style=\"color:#\">Dear "
 
 // UserName
-"[----------FirstName(40Bytes)----------]"
+"[--------$First$Name$(40Bytes)$--------]"
 
 
 "</span><br /><br /> Welcome to Albedo.</div>"
@@ -222,7 +233,7 @@ std::string register_mail::content =
 "<div style=\"font-family:open Sans Helvetica, Arial, sans-serif;font-size:22px;font-weight:bold;line-height:1;text-align:left;color:#CC3344;\">Verification Code: "
 
 // Verification Code
-"XXXXXX" // 6Byte
+"$CODE$" // 6Byte
 
 
 "</div>"
@@ -253,4 +264,3 @@ std::string register_mail::content =
 ""
 "</html>"
 "";
-
