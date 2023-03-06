@@ -1,15 +1,20 @@
 #include <AlbedoLog.hpp>
 
+#include "server.h"
+
 int main(int argc, char* argv[])
 {
 	using namespace Albedo;
+	using namespace Albedo::Hub::server;
 	try
 	{
-
+		auto& server = AlbedoHubServer::instance();
+		server.start();
+		while (true) server.handle();
 	}
-	catch (std::runtime_error& e)
+	catch (std::exception& e)
 	{
-		log::error("Albedo Hub (Server): {}", e.what());
+		log::error("[Albedo Hub Server (Unsolved Exception)]: {}", e.what());
 	}
 	return 0;
 }

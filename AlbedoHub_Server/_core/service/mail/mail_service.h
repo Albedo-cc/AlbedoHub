@@ -21,7 +21,12 @@ namespace service
 		friend class pattern::Singleton<MailService>;
 	public:
 		void start();
-		std::shared_ptr<MailBox> getMailBox() { return m_mailbox; }
+		std::shared_ptr<MailBox> getMailBox() 
+		{ 
+			if (!hasStarted) 
+				throw std::runtime_error("Mail Service did not start, so it is invalied to get a mailbox");
+			return m_mailbox; 
+		}
 
 		const std::thread::id getThreadID() const { return m_thread->get_id(); }
 	private:
