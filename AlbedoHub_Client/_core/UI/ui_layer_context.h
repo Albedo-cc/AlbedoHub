@@ -1,7 +1,8 @@
 namespace Albedo {
 namespace Hub{
 namespace client{
-namespace ui{
+namespace layer
+{
 	
 
-}}}} // namespace Albedo::Hub::client::ui
+}}}} // namespace Albedo::Hub::client::layer

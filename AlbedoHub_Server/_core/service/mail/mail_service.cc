@@ -17,17 +17,24 @@ namespace service
 				{
 					while (true)
 					{
-						m_mailbox_in->wait();
-						swap_mailbox();
-						while (!m_mailbox->empty())
+						try
 						{
-							auto mail = m_mailbox->pop_front();
-							for (int resend = 1; resend <= 2; ++resend)
+							m_mailbox_in->wait();
+							swap_mailbox();
+							while (!m_mailbox->empty())
 							{
-								if (m_smtp.send(mail)) break;
-								else log::warn("Failed to send mail (Retry: {}/2)", resend);
+								auto mail = m_mailbox->pop_front();
+								for (int resend = 1; resend <= 2; ++resend)
+								{
+									if (m_smtp.send(mail)) break;
+									else log::warn("Failed to send mail (Retry: {}/2)", resend);
+								}
 							}
-						}				
+						}
+						catch (std::exception& e)
+						{
+							log::warn("[Albedo Hub Server - MailService]: (Unsoloved exception) {}", e.what());
+						}
 					}
 				}); // End
 			m_thread->detach(); // Daemon Thread

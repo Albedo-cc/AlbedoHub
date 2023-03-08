@@ -9,7 +9,7 @@
 namespace Albedo {
 namespace Hub{
 namespace client{
-namespace netlayer
+namespace layer
 {
 	struct RegisterResult
 	{
@@ -27,4 +27,4 @@ namespace netlayer
 
 	};
 
-}}}} // namespace Albedo::Hub::client::netlayer
+}}}} // namespace Albedo::Hub::client::layer

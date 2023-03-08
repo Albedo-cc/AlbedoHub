@@ -3,8 +3,9 @@
 #include <AlbedoPattern.hpp>
 #include <AlbedoLog.hpp>
 
-#include "client_context.h"
+#include "albedo_hub_context.h"
 #include "Net/net_layer.h"
+#include "UI/ui_layer.h"
 
 namespace Albedo {
 namespace Hub{
@@ -19,10 +20,11 @@ namespace client
 		void start()
 		{
 			auto& context = AlbedoHubContext::instance(); 
-			context.running = true;
-			while (context.running)
+			context.m_running = true;
+			while (context.isRunning())
 			{
-				NetLayer::instance().update();
+				//layer::Net::instance().update();
+				layer::UI::instance().update();
 			}
 		}
 	private:

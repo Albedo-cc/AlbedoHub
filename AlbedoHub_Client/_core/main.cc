@@ -1,6 +1,6 @@
 #include <AlbedoLog.hpp>
 
-#include "client.h"
+#include "albedo_hub.h"
 
 int main(int argc, char* argv[])
 {

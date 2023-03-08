@@ -18,13 +18,14 @@
 
 namespace Albedo {
 namespace Hub{
-namespace client
+namespace client{
+namespace layer
 {
 	
-	class NetLayer:
-		public pattern::Singleton<NetLayer>
+	class Net:
+		public pattern::Singleton<Net>
 	{
-		friend class pattern::Singleton<NetLayer>;
+		friend class pattern::Singleton<Net>;
 	public:
 		void update()
 		{
@@ -54,39 +55,45 @@ namespace client
 		std::unique_ptr<net::Client> m_client;
 		net::HandlerPool m_handler_pool;
 	private:
-		NetLayer() :
+		Net() :
 			m_client{ std::make_unique<net::Client>() },
 			m_handler_pool{ [](net::MID pid)->net::HID { return pid / 100; }}
 		{
 			register_handlers();
 			connect_to_server();
+
+			std::thread thread_message_handler = std::thread([this]()
+				{
+					static auto& messages = m_client->getMessageDeque();
+					try
+					{
+						messages.wait();
+						while (!messages.empty())
+						{
+							auto message = std::make_shared<net::SignedMessage>(std::move(messages.pop_front()));
+							message->setSender(m_client->getSession());
+							m_handler_pool.handle(std::move(message));
+						}
+					}
+					catch (std::exception& e)
+					{
+						log::error("[Albedo Hub NetLayer - Message Handler]: (Unsoloved exception) {}", e.what());
+					}
+				});
+			thread_message_handler.detach();
 		}
 
 		// Helpers
 		void register_handlers()
 		{
-			m_handler_pool.regist(1, std::make_shared<netlayer::HRegister>());
+			m_handler_pool.regist(1, std::make_shared<layer::HRegister>());
 		}
 		void connect_to_server()
 		{
 			m_client->connect("127.0.0.1", 5200);
 			if (!m_client->isConnected())
 				throw std::runtime_error("Failed to connect to the server!");
-
-			std::thread t = std::thread([this]()
-			{
-				static auto& messages = m_client->getMessageDeque();
-
-				messages.wait();
-				while (!messages.empty())
-				{
-					auto message = std::make_shared<net::SignedMessage>(std::move(messages.pop_front()));
-					message->setSender(m_client->getSession());
-					m_handler_pool.handle(std::move(message));
-				}
-			});
-			t.detach();
 		}
 	};
 
-}}} // namespace Albedo::Hub::client
+}}}} // namespace Albedo::Hub::client::layer

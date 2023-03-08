@@ -29,9 +29,9 @@ namespace service
 								sql->execute();
 							}
 						}
-						catch (std::runtime_error& err)
+						catch (std::exception& e)
 						{
-							log::error("[Albedo Hub Server Database]: {}", err.what());
+							log::error("[Albedo Hub Server Database]: (Unsoloved exception) {}", e.what());
 						}
 						
 					}

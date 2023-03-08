@@ -15,12 +15,14 @@ namespace client
 		friend class AlbedoHub;
 
 	private:
-		bool running = false;
+		bool m_running = false;
 
 	public:
+		bool isRunning() const { return m_running; }
+
 		void shutdown(const char* caller_signature)
 		{
-			running = false;
+			m_running = false;
 			log::critical("{} shutdowned Albedo Hub!", caller_signature);
 		}
 	private:

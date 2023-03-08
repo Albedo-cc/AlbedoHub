@@ -5,6 +5,8 @@
 namespace Albedo {
 namespace Hub{
 namespace client{
+namespace layer
+{
 
 	class NetLayerContext:
 		public pattern::Singleton<NetLayerContext>
@@ -16,4 +18,4 @@ namespace client{
 		NetLayerContext() = default;
 	};
 
-}}} // namespace Albedo::Hub::client
+}}}} // namespace Albedo::Hub::client::layer

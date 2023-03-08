@@ -9,13 +9,13 @@
 namespace Albedo {
 namespace Hub{
 namespace client{
-namespace netlayer
+namespace layer
 {
 	
 	void HRegister::handle(std::shared_ptr<net::SignedMessage> message)
 	{
 		auto message_id = message->header.message_id;
-		std::cout << "MID = " << message_id << '\n';
+
 		if (message_id == AlbedoProtocol::REGISTER_CLIENT_SEND_VERIFICATION)
 		{
 			std::cout << message->body.message << '\n';
@@ -39,4 +39,4 @@ namespace netlayer
 		else throw std::runtime_error("Failed to handle register! - Unknow Protocol");
 	}
 
-}}}} // namespace Albedo::Hub::client::netlayer
+}}}} // namespace Albedo::Hub::client::layer
