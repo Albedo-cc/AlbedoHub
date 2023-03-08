@@ -1,16 +1,34 @@
-#include <AlbedoLog.hpp>
-#define ALBEDONET_SERVER
-#include <AlbedoNet.hpp>
+#pragma once
 
-#include "service/database/database.h"
-#include "service/database/tables/authentication.h"
+#include <AlbedoPattern.hpp>
+#include <AlbedoLog.hpp>
+
+#include <memory>
+#include <source_location>
 
 namespace Albedo {
 namespace Hub{
 namespace server
 {
 	
-	
+	class ServerContext:
+		public pattern::Singleton<ServerContext>
+	{
+		friend class pattern::Singleton<ServerContext>;
+		friend class AlbedoHubServer;
+
+	private:
+		bool running = false;
+
+	public:
+		void shutdown(const char* caller_signature)
+		{
+			running = false;
+			log::critical("{} shutdowned the server!", caller_signature);
+		}
+	private:
+		ServerContext() = default;
+	};
 
 }}} // namespace Albedo::Hub::server
 

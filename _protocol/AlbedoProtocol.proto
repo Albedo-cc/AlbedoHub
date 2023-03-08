@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package AlbedoProtocol;
+
+enum PID
+{
+    FAILED = 0; // First enum mush be 0
+    SUCCESS = 1;
+    RESEND =2;
+    // Sign in & Sign up
+    REGISTER_PLACEHOLDER_BEGIN = 100;
+    REGISTER_SUCCESS = 101;
+    REGISTER_FAILED = 102;
+    REGISTER_CLIENT_SEND_REQUEST = 103;
+    REGISTER_CLIENT_SEND_VERIFICATION = 104;
+    REGISTER_PLACEHOLDER_END = 105;
+}

@@ -1,10 +1,11 @@
 #pragma once
 
-#include "../database.h"
+#include "../database_service.h"
 
 namespace Albedo{
 namespace Hub{
-namespace server
+namespace server{
+namespace database
 {
 
 	class AuthenTable
@@ -12,10 +13,11 @@ namespace server
 	public:
 		static void insert(std::string_view account, std::string_view password_SHA256)
 		{
-			std::stringstream sql;
+			/*std::stringstream sql;
 			sql << "INSERT INTO authentication(Account, Password) "
 				"VALUES('" << account << "', '" << password_SHA256 << "');";
-			Database::instance().command(sql.str());
+
+			service::DatabaseService::instance().post(std::make_shared<service::SQL>(sql.str(), false));*/
 		}
 
 		static void remove()
@@ -32,8 +34,10 @@ namespace server
 		{
 			std::stringstream sql;
 			sql << "SELECT * FROM authentication WHERE " << condition;
-			return Database::instance().query(sql.str());
+			auto result = std::make_shared<service::SQL>(sql.str(), true);
+			service::DatabaseService::instance().post(result);
+			return result;
 		}
 	};
 
-}}} // namespace Albedo::Hub::server
+}}}} // namespace Albedo::Hub::server::database

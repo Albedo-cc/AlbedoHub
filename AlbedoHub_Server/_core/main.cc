@@ -8,11 +8,9 @@ int main(int argc, char* argv[])
 	using namespace Albedo::Hub::server;
 	try
 	{
-		auto& server = AlbedoHubServer::instance();
-		server.start();
-		while (true) server.handle();
+		AlbedoHubServer::instance().start();
 	}
-	catch (std::exception& e)
+	catch (std::runtime_error& e)
 	{
 		log::error("[Albedo Hub Server (Unsolved Exception)]: {}", e.what());
 	}

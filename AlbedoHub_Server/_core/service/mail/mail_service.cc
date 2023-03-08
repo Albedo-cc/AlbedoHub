@@ -1,7 +1,5 @@
 #include "mail_service.h"
 
-#include <AlbedoLog.hpp>
-
 namespace Albedo {
 namespace Hub{
 namespace server{
@@ -14,15 +12,22 @@ namespace service
 		else hasStarted = true;
 		try
 		{
-			m_mailbox = std::make_shared<MailBox>();
-
 			m_thread = std::make_unique<std::thread>(
-				[&]() // Begin Handling Mails
+				[this]() // Begin Handling Mails
 				{
 					while (true)
 					{
-						m_mailbox->wait();
-						m_smtp.send(m_mailbox->pop_front());
+						m_mailbox_in->wait();
+						swap_mailbox();
+						while (!m_mailbox->empty())
+						{
+							auto mail = m_mailbox->pop_front();
+							for (int resend = 1; resend <= 2; ++resend)
+							{
+								if (m_smtp.send(mail)) break;
+								else log::warn("Failed to send mail (Retry: {}/2)", resend);
+							}
+						}				
 					}
 				}); // End
 			m_thread->detach(); // Daemon Thread
@@ -33,11 +38,6 @@ namespace service
 		}
 
 		log::info("[Albedo Hub Server]: Mail Service Started!");
-	}
-
-	MailService::~MailService()
-	{
-		log::info("MailService Closed!");
 	}
 
 }}}} // namespace Albedo::Hub::server::service
