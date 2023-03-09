@@ -12,21 +12,30 @@
 #include <GLFW/glfw3.h>
 #include <vulkan/vulkan.h>
 
+#include "load_image.h"
+
 namespace Albedo {
 namespace Hub{
 namespace client{
 namespace layer
 {
+    using Image = VulkanImage;
 	
 	class ImGUIManager:
 		public pattern::Singleton<ImGUIManager>
 	{
 		friend class pattern::Singleton<ImGUIManager>;
+        friend class UI;
+        friend class ImageLoader;
 	public:
-        bool shoudClose() const { return glfwWindowShouldClose(window); }
+        ImGuiIO& IO() { return ImGui::GetIO(); }
 
+        bool shoudClose() const { return glfwWindowShouldClose(window); }
         void beginFrame();
         void endFrame();
+
+    public: // Helpers
+        Image loadImage(const char* filename);
 
 	private:
 		ImGUIManager();
@@ -43,8 +52,6 @@ namespace layer
         void FramePresent(ImGui_ImplVulkanH_Window* wd);
 
 	private:
-        bool show_demo_window = true;
-        bool show_another_window = true;
         ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
         GLFWwindow* window = NULL;

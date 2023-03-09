@@ -28,6 +28,7 @@ target_put_into_folder(AlbedoNet "AlbedoHub/Extern/Common/AlbedoNet")
     target_put_into_folder(asio "AlbedoHub/Extern/Common/AlbedoNet/3rdParty/ASIO")
     target_put_into_folder(cryptopp "AlbedoHub/Extern/Common/AlbedoNet/3rdParty/Crypto++")
 target_put_into_folder(JSON "AlbedoHub/Extern/Common/JSON")
+target_put_into_folder(stb_image "AlbedoHub/Extern/Common/stb_image")
 target_put_into_folder(protobuf "AlbedoHub/Extern/Common/Protocol_Buffer")
 
 

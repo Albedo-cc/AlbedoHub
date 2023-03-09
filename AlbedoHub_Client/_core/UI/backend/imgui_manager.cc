@@ -1,4 +1,4 @@
-#include "../include/imgui_manager.h"
+#include "../backend/imgui_manager.h"
 #include <cstdio>
 
 // Callback Functions
@@ -47,9 +47,6 @@ namespace layer
 	{
         log::info("initializing Dear ImGUI");
         initVulkan();
-        ImGuiStyle& style = ImGui::GetStyle();
-        style.Colors[ImGuiCol_WindowBg] = ImVec4(200, 0, 0, 100);
-        style.WindowRounding = 10.0;
 	}
 
 	ImGUIManager::~ImGUIManager()
@@ -116,9 +113,17 @@ namespace layer
         glfwSetErrorCallback(glfw_error_callback);
         if (!glfwInit())
             return 1;
-
+        
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-        this->window = glfwCreateWindow(1280, 720, "Albedo Hub", NULL, NULL);
+        glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
+        glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+        this->window = glfwCreateWindow(1000, 600, "Albedo Hub", NULL, NULL);
+        int screen_width = 0;
+        int screen_height = 0;
+
+        GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+        const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+        glfwSetWindowPos(this->window, (mode->width - 1000) >> 1, (mode->height - 600) >> 1);
 
         // Setup Vulkan
         if (!glfwVulkanSupported())
@@ -215,11 +220,6 @@ namespace layer
             check_vk_result(err);
             ImGui_ImplVulkan_DestroyFontUploadObjects();
         }
-
-        // Our state
-        bool show_demo_window = true;
-        bool show_another_window = false;
-        ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
     }
 
     void ImGUIManager::SetupVulkan(const char** extensions, uint32_t extensions_count)
@@ -503,5 +503,17 @@ namespace layer
         check_vk_result(err);
         wd->SemaphoreIndex = (wd->SemaphoreIndex + 1) % wd->ImageCount; // Now we can use the next set of semaphores
     }
+
+    /*Image ImGUIManager::loadImage(const char* filename)
+    {
+        Image image{};
+        bool res = ImageLoader::LoadTextureFromFile(filename, &image);
+        if (!res)
+        {
+            log::error("Failed to load image {}", filename);
+            return {};
+        }
+        return image;
+    }*/
 
 }}}} // namespace Albedo::Hub::client::layer

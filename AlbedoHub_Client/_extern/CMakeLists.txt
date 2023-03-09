@@ -22,6 +22,14 @@ if(NOT TARGET glfw)
     target_link_libraries(AlbedoHub_Client_Libs INTERFACE glfw)
 endif()
 
+# stb_image
+if (NOT TARGET stb_image)
+    message(STATUS "\nLoading stb_image (stb_image)")
+    add_subdirectory(stb_image-2023-1-29)
+    
+    target_link_libraries(AlbedoHub_Client_Libs INTERFACE stb_image)
+endif()
+
 # Dear ImGui
 if (NOT TARGET imgui)
     message(STATUS "\nLoading Dear ImGui (imgui)")
