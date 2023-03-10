@@ -21,6 +21,7 @@ namespace Runtime
     public:
         void update()
         {
+
             if (MImGUI.shoudClose())
                 GlobalContext::instance().shutdown("UI Layer - glfwWindowShouldClose()");
             if (!GlobalContext::instance().isRunning()) return;
@@ -29,6 +30,7 @@ namespace Runtime
 
             MImGUI.beginFrame();
             {
+
                 for (const auto& window : m_window_list)
                 {
                     if (window) window->render();
@@ -43,7 +45,10 @@ namespace Runtime
     private:
         UI() :
             m_window_list(WindowID::max_window_id)
-        { 
+        {
+            MImGUI.loadImage(ImageID::title_bar_icon, "resource/image/ui_title_bar.png");
+            MImGUI.loadImage(ImageID::default_user_avatar, "resource/image/ui_user_avatar_default.png");
+
             m_window_list[WindowID::title_bar_window] = std::make_unique<TitleBarWindow>();
             m_window_list[WindowID::menu_window] = std::make_unique<MenuWindow>();
             m_window_list[WindowID::content_window] = std::make_unique<ContentWindow>();

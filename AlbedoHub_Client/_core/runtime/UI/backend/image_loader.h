@@ -5,7 +5,6 @@
 // [ImGui Example] 
 // https://github.com/ocornut/imgui/wiki/Image-Loading-and-Displaying-Examples
 
-
 // A struct to manage data related to one image in vulkan
 struct VulkanImage
 {
@@ -25,7 +24,7 @@ struct VulkanImage
     VulkanImage() { memset(this, 0, sizeof(*this)); }
 };
 
-class ImageLoader
+class ImGUIImageLoader
 {
 public:
     static uint32_t findMemoryType(uint32_t type_filter, VkMemoryPropertyFlags properties);

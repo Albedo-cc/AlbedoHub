@@ -12,6 +12,8 @@
 #include <GLFW/glfw3.h>
 #include <vulkan/vulkan.h>
 
+#include "image_loader.h"
+
 namespace Albedo {
 namespace Hub{
 namespace Client{
@@ -23,7 +25,7 @@ namespace Runtime
 	{
 		friend class pattern::Singleton<ImGUIManager>;
         friend class UI;
-        friend class ImageLoader;
+        friend class ImGUIImageLoader;
 	public:
         ImGuiIO& IO() { return ImGui::GetIO(); }
 
@@ -31,7 +33,10 @@ namespace Runtime
         void beginFrame();
         void endFrame();
 
+        void loadImage(int id, const char* image_path);
+        VulkanImage& getImage(int id);
 	private:
+        std::unordered_map<int, VulkanImage> m_image_pool;
 		ImGUIManager();
 		~ImGUIManager();
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <AlbedoPattern.hpp>
+#include <memory>
 
 namespace Albedo {
 namespace Hub{
@@ -13,6 +14,8 @@ namespace Runtime
 	{
 		friend class pattern::Singleton<NetContext>;
 		friend class NetLayer;
+	public:
+		
 
 	private:
 		NetContext() = default;

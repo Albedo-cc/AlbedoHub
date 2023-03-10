@@ -2,23 +2,27 @@
 #pragma once
 
 #include "window.h"
-#include "../backend/image_loader.h"
 #include "../../../global_context.h"
+#include "../UI_context.h"
 
 namespace Albedo {
 namespace Hub{
 namespace Client{
 namespace Runtime
 {
+	enum Menu
+	{
+		// Avatar (Do not add to vector menus!)
+		SIGN_IN_OUT,
+		// Menu List
+		Home,
+		User,
+	};
+	static std::vector<const char*> menus{ "Home", "User" };
 
 	class MenuWindow:
 		public Window
 	{
-		enum class Menu
-		{
-			Home, User
-		};
-		std::vector<const char*> menus{ "Home", "User" };
 	public:
 		virtual void render() override
 		{
@@ -30,12 +34,14 @@ namespace Runtime
 			endWindow();
 		}
 	private:
-		Menu m_current_menu = Menu::Home;
-		VulkanImage m_user_avatar;
+		VulkanImage& m_user_avatar;
 
 	public:
-		MenuWindow()
+		MenuWindow():
+			m_user_avatar{ ImGUIManager::instance().getImage(ImageID::default_user_avatar)}
 		{
+			UIContext::instance().g_current_menu = Menu::Home;
+
 			m_window_name = "Menu";
 			m_window_size = { 160, 600 - 24 };
 			m_window_position = { 0, 24 };
@@ -47,20 +53,12 @@ namespace Runtime
 				ImGuiWindowFlags_NoScrollbar |
 				ImGuiWindowFlags_NoSavedSettings |
 				ImGuiWindowFlags_NoScrollWithMouse;
-
-			const char* icon_user = "resource/image/ui_user_avatar_default.png";
-			if (!::ImageLoader::LoadTextureFromFile(
-				icon_user, &m_user_avatar))
-			{
-				log::error("Failed to load image ({}) ", icon_user);
-				std::exit(-1);
-			}
 		}
 
 	protected:
 		virtual void preprocessing() override
 		{
-			ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4{ 0.5f, 0.5f, 0.5f, 1.0f });
+			ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4{ 0.2f, 0.2f, 0.2f, 1.0f });
 		}
 
 		virtual void postprocessing() override
@@ -75,8 +73,10 @@ namespace Runtime
 			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, { 0.0,0.0,0.0, 0.0 });
 			ImGui::PushStyleColor(ImGuiCol_ButtonActive, { 0.0,0.0,0.0, 0.0 });
 			ImGui::SetCursorPos({ 5, 5 });
-			ImGui::ImageButton(static_cast<ImTextureID>(m_user_avatar.DS),
-				ImVec2(140, 140));
+			if (ImGui::ImageButton(static_cast<ImTextureID>(m_user_avatar.DS), ImVec2(140, 140)))
+			{
+				UIContext::instance().g_current_menu = Menu::SIGN_IN_OUT;
+			}
 			ImGui::PopStyleColor(3);
 			
 			ImGui::SetCursorPos({ 5, 150 });
@@ -88,18 +88,18 @@ namespace Runtime
 		void draw_options()
 		{
 			float offset_y = 140.0 + 40.0;
-			int selected_menu = 0;
+			int selected_menu = static_cast<int>(Menu::Home);
 
 			for (const auto& menu : menus)
 			{
 				ImGui::SetCursorPos({ 10.0f, offset_y });
 				if (ImGui::Button(menu, { 140, 50 }))
 				{
-					m_current_menu = static_cast<Menu>(selected_menu);
+					UIContext::instance().g_current_menu = selected_menu;
 				}
 				offset_y += 60.0f;
 				selected_menu++;
-			}	
+			}
 		}
 	};
 }}}} // namespace Albedo::Hub::Client::Runtime

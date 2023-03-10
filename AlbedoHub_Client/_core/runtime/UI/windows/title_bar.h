@@ -3,6 +3,7 @@
 #include "window.h"
 #include "../backend/image_loader.h"
 #include "../../../global_context.h"
+#include "../UI_context.h"
 
 namespace Albedo {
 namespace Hub{
@@ -18,7 +19,7 @@ namespace Runtime
 		{
 			beginWindow();
 			{
-				ImGui::SetCursorPos({ 16, 2.0 });
+				ImGui::SetCursorPos({ 2.0, 2.0 });
 				ImGui::Image(static_cast<ImTextureID>(AlbedoHub_icon.DS),
 					ImVec2(AlbedoHub_icon.Width, AlbedoHub_icon.Height));
 				ImGui::SetCursorPos({ 1000 - 22, 2.0 });
@@ -30,10 +31,11 @@ namespace Runtime
 			endWindow();
 		}
 	private:
-		VulkanImage AlbedoHub_icon;
+		VulkanImage& AlbedoHub_icon;
 
 	public:
-		TitleBarWindow()
+		TitleBarWindow() :
+			AlbedoHub_icon{ ImGUIManager::instance().getImage(ImageID::title_bar_icon) }
 		{
 			m_window_name = "Title Bar";
 			m_window_flags = 
@@ -44,20 +46,6 @@ namespace Runtime
 				ImGuiWindowFlags_NoScrollbar |
 				ImGuiWindowFlags_NoSavedSettings |
 				ImGuiWindowFlags_NoScrollWithMouse;
-
-			// Load Title Bar Icon
-			const char* icon_title_bar = "resource/image/ui_title_bar.png";
-			if (!::ImageLoader::LoadTextureFromFile(
-				icon_title_bar, &AlbedoHub_icon))
-			{
-				log::error("Failed to load image ({}) ", icon_title_bar);
-				std::exit(-1);
-			}
-		}
-
-		~TitleBarWindow()
-		{
-			::ImageLoader::RemoveTexture(&AlbedoHub_icon);
 		}
 
 	protected:

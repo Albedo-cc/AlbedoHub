@@ -54,6 +54,13 @@ namespace Runtime
         log::info("Releasing Dear ImGUI");
 
         VkResult err = vkDeviceWaitIdle(g_Device);
+        
+        for (auto& image : m_image_pool)
+        {
+            ::ImGUIImageLoader::RemoveTexture(&(image.second));
+        }
+        m_image_pool.clear();
+
         check_vk_result(err);
         ImGui_ImplVulkan_Shutdown();
         ImGui_ImplGlfw_Shutdown();
@@ -502,6 +509,28 @@ namespace Runtime
         }
         check_vk_result(err);
         wd->SemaphoreIndex = (wd->SemaphoreIndex + 1) % wd->ImageCount; // Now we can use the next set of semaphores
+    }
+
+    void ImGUIManager::loadImage(int image_id, const char* image_path)
+    {
+        ::VulkanImage image{};
+        if (!::ImGUIImageLoader::LoadTextureFromFile(image_path, &image))
+        {
+            log::error("Failed to load image {}", image_path);
+            std::exit(-1);
+        }
+        m_image_pool.emplace(image_id, std::move(image));
+    }
+
+    VulkanImage& ImGUIManager::getImage(int image_id)
+    {
+        auto image = m_image_pool.find(image_id);
+        if (image == m_image_pool.end())
+        {
+            log::error("Failed to get image {}", image_id);
+            std::exit(-1);
+        }
+        return image->second;
     }
 
 }}}} // namespace Albedo::Hub::Client::Runtime
