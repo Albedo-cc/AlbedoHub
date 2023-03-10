@@ -8,7 +8,7 @@
 
 namespace Albedo {
 namespace Hub{
-namespace server
+namespace Server
 {
 	
 	class ServerContext:
@@ -30,7 +30,7 @@ namespace server
 		ServerContext() = default;
 	};
 
-}}} // namespace Albedo::Hub::server
+}}} // namespace Albedo::Hub::Server
 
 //
 ////AuthenTable::insert("745574309@qq.com", net::Hash::SHA256("123321"));

@@ -4,9 +4,8 @@
 
 namespace Albedo {
 namespace Hub{
-namespace client{
-namespace layer{
-namespace window
+namespace Client{
+namespace Runtime
 {
 
 	class Window
@@ -15,8 +14,11 @@ namespace window
 		virtual void render() = 0;
 
 	protected:
+
+		virtual void preprocessing() {};
 		void beginWindow()
 		{
+			preprocessing();
 			ImGui::SetNextWindowSize(m_window_size);
 			ImGui::SetNextWindowPos(m_window_position);
 			ImGui::Begin(m_window_name.c_str(), (bool*)m_is_closable, m_window_flags);
@@ -25,7 +27,9 @@ namespace window
 		void endWindow()
 		{
 			ImGui::End();
+			postprocessing();
 		}
+		virtual void postprocessing() {};
 
 	protected:
 		std::string m_window_name;
@@ -36,4 +40,4 @@ namespace window
 		ImGuiWindowFlags m_window_flags;
 	};
 
-}}}}} // namespace Albedo::Hub::client::layer::window
+}}}} // namespace Albedo::Hub::Client::Runtime

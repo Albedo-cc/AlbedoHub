@@ -11,9 +11,9 @@
 
 namespace Albedo {
 namespace Hub{
-namespace server{
-namespace service
+namespace Server
 {
+
 	using namespace Albedo::net;
 	using MailBox = SafeDeque<std::shared_ptr<Mail>>;
 
@@ -64,4 +64,4 @@ namespace service
 		}
 	};
 
-}}}} // namespace Albedo::Hub::server::service
+}}} // namespace Albedo::Hub::Server

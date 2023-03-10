@@ -13,7 +13,7 @@
 
 namespace Albedo {
 namespace Hub{
-namespace server
+namespace Server
 {
 	constexpr const uint16_t SERVER_PORT = 5200;
 	
@@ -67,10 +67,10 @@ namespace server
 		{
 			log::info("[Albedo Hub Server]: Starting (Port {})", SERVER_PORT);
 			// Start Services
-			service::DatabaseService::instance().start();
-			service::MailService::instance().start();
+			DatabaseService::instance().start();
+			MailService::instance().start();
 			// Register Handlers
-			m_handler_pool.regist(1, std::make_shared<handler::HRegister>());
+			m_handler_pool.regist(1, std::make_shared<Handler::HRegister>());
 		}
 		~AlbedoHubServer() 
 		{
@@ -78,4 +78,4 @@ namespace server
 		}
 	};
 
-}}} // namespace Albedo::Hub::server
+}}} // namespace Albedo::Hub::Server

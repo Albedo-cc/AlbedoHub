@@ -3,13 +3,13 @@
 #include <AlbedoPattern.hpp>
 #include <AlbedoLog.hpp>
 
-#include "albedo_hub_context.h"
-#include "Net/net_layer.h"
-#include "UI/ui_layer.h"
+#include "global_context.h"
+#include "runtime/Net/net.h"
+#include "runtime/UI/ui.h"
 
 namespace Albedo {
 namespace Hub{
-namespace client
+namespace Client
 {
 	
 	class AlbedoHub:
@@ -19,12 +19,12 @@ namespace client
 	public:
 		void start()
 		{
-			auto& context = AlbedoHubContext::instance(); 
+			auto& context = GlobalContext::instance();
 			context.m_running = true;
 			while (context.isRunning())
 			{
-				//layer::Net::instance().update();
-				layer::UI::instance().update();
+				//Runtime::Net::instance().update();
+				Runtime::UI::instance().update();
 			}
 		}
 	private:
@@ -38,4 +38,4 @@ namespace client
 		}
 	};
 
-}}} // namespace Albedo::Hub::client
+}}} // namespace Albedo::Hub::Client

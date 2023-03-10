@@ -13,8 +13,8 @@
 
 namespace Albedo {
 namespace Hub{
-namespace server{
-namespace handler
+namespace Server{
+namespace Handler
 {
 	
 	class HRegister
@@ -41,4 +41,4 @@ namespace handler
 		}
 	};
 
-}}}} // namespace Albedo::Hub::server::handler
+}}}} // namespace Albedo::Hub::Server::Handler

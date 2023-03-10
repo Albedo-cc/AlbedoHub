@@ -10,9 +10,9 @@
 
 namespace Albedo{
 namespace Hub{
-namespace server{
-namespace service
+namespace Server
 {
+
 	class SQL;
 	using SQLDeque = net::SafeDeque<std::shared_ptr<SQL>>;
 
@@ -106,4 +106,4 @@ namespace service
 		std::shared_ptr<DB::Query> m_query_result;
 	};
 
-}}}} // namespace Albedo::Hub::server::service
+}}} // namespace Albedo::Hub::Server

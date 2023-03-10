@@ -12,15 +12,12 @@
 #include <GLFW/glfw3.h>
 #include <vulkan/vulkan.h>
 
-#include "load_image.h"
-
 namespace Albedo {
 namespace Hub{
-namespace client{
-namespace layer
+namespace Client{
+namespace Runtime
 {
-    using Image = VulkanImage;
-	
+
 	class ImGUIManager:
 		public pattern::Singleton<ImGUIManager>
 	{
@@ -33,9 +30,6 @@ namespace layer
         bool shoudClose() const { return glfwWindowShouldClose(window); }
         void beginFrame();
         void endFrame();
-
-    public: // Helpers
-        Image loadImage(const char* filename);
 
 	private:
 		ImGUIManager();
@@ -71,4 +65,4 @@ namespace layer
         bool g_SwapChainRebuild = false;
 	};
 
-}}}} // namespace Albedo::Hub::client::layer
+}}}} // namespace Albedo::Hub::Client::Runtime

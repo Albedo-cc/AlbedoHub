@@ -1,5 +1,5 @@
 #include "h_register.h"
-#include "../../net_layer_context.h"
+#include "../../net_context.h"
 
 #include <AlbedoLog.hpp>
 #include <register_protocol.pb.h>
@@ -8,8 +8,8 @@
 
 namespace Albedo {
 namespace Hub{
-namespace client{
-namespace layer
+namespace Client{
+namespace Runtime
 {
 	
 	void HRegister::handle(std::shared_ptr<net::SignedMessage> message)
@@ -39,4 +39,4 @@ namespace layer
 		else throw std::runtime_error("Failed to handle register! - Unknow Protocol");
 	}
 
-}}}} // namespace Albedo::Hub::client::layer
+}}}} // namespace Albedo::Hub::Client::Runtime

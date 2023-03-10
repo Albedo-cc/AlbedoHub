@@ -39,8 +39,8 @@ namespace
 
 namespace Albedo {
 namespace Hub{
-namespace client{
-namespace layer
+namespace Client{
+namespace Runtime
 {
 	
 	ImGUIManager::ImGUIManager()
@@ -54,7 +54,7 @@ namespace layer
         log::info("Releasing Dear ImGUI");
 
         VkResult err = vkDeviceWaitIdle(g_Device);
-        //check_vk_result(err);
+        check_vk_result(err);
         ImGui_ImplVulkan_Shutdown();
         ImGui_ImplGlfw_Shutdown();
         ImGui::DestroyContext();
@@ -504,16 +504,4 @@ namespace layer
         wd->SemaphoreIndex = (wd->SemaphoreIndex + 1) % wd->ImageCount; // Now we can use the next set of semaphores
     }
 
-    /*Image ImGUIManager::loadImage(const char* filename)
-    {
-        Image image{};
-        bool res = ImageLoader::LoadTextureFromFile(filename, &image);
-        if (!res)
-        {
-            log::error("Failed to load image {}", filename);
-            return {};
-        }
-        return image;
-    }*/
-
-}}}} // namespace Albedo::Hub::client::layer
+}}}} // namespace Albedo::Hub::Client::Runtime

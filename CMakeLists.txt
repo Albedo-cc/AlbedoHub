@@ -28,9 +28,7 @@ target_put_into_folder(AlbedoNet "AlbedoHub/Extern/Common/AlbedoNet")
     target_put_into_folder(asio "AlbedoHub/Extern/Common/AlbedoNet/3rdParty/ASIO")
     target_put_into_folder(cryptopp "AlbedoHub/Extern/Common/AlbedoNet/3rdParty/Crypto++")
 target_put_into_folder(JSON "AlbedoHub/Extern/Common/JSON")
-target_put_into_folder(stb_image "AlbedoHub/Extern/Common/stb_image")
 target_put_into_folder(protobuf "AlbedoHub/Extern/Common/Protocol_Buffer")
-
 
 # Server
 target_put_into_folder(AlbedoHub_Server "AlbedoHub/Server")
@@ -41,6 +39,7 @@ target_put_into_folder(AlbedoHub_Client "AlbedoHub/Client")
     target_put_into_folder(vulkan "AlbedoHub/Extern/Client/Vulkan")
     target_put_into_folder(glfw "AlbedoHub/Extern/Client/GLFW")
     target_put_into_folder(update_mappings "AlbedoHub/Extern/Client/GLFW")
+    target_put_into_folder(stb_image "AlbedoHub/Extern/Client/stb_image")
 
 #Protocol
 target_put_into_folder(Protocol "AlbedoHub/Protocol")

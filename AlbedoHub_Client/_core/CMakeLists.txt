@@ -6,3 +6,9 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SERVER_CORE_HEADER} ${SERV
 add_executable(${PROJECT_NAME} 
     ${SERVER_CORE_HEADER}
     ${SERVER_CORE_SOURCE})
+
+add_custom_command(
+    TARGET ${PROJECT_NAME} PRE_BUILD
+    COMMAND ${CMAKE_COMMAND}
+    -E copy_directory ${PROJECT_SOURCE_DIR}/_resource $<TARGET_FILE_DIR:${PROJECT_NAME}>/resource
+)

@@ -1,14 +1,13 @@
 #include <AlbedoLog.hpp>
 
-#include "albedo_hub.h"
+#include "startup.h"
 
 int main(int argc, char* argv[])
 {
 	using namespace Albedo;
-	using namespace Albedo::Hub::client;
 	try
 	{
-		AlbedoHub::instance().start();
+		Albedo::Hub::Client::AlbedoHub::instance().start();
 	}
 	catch (std::exception& e)
 	{

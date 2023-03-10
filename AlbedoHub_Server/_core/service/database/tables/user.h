@@ -4,8 +4,8 @@
 
 namespace Albedo{
 namespace Hub{
-namespace server{
-namespace database
+namespace Server{
+namespace Database
 {
 
 	class UserTable
@@ -19,7 +19,7 @@ namespace database
 			sql << "INSERT INTO user(Account, Password, Name) "
 				"VALUES('" << account << "', '" << password_SHA256 << "', '" << name << "'); ";
 
-			service::DatabaseService::instance().post(std::make_shared<service::SQL>(sql.str(), false));
+			DatabaseService::instance().post(std::make_shared<SQL>(sql.str(), false));
 		}
 
 		static void remove()
@@ -36,8 +36,8 @@ namespace database
 		{
 			std::stringstream sql;
 			sql << "SELECT * FROM user WHERE " << condition;
-			auto result = std::make_shared<service::SQL>(sql.str(), true);
-			service::DatabaseService::instance().post(result);
+			auto result = std::make_shared<SQL>(sql.str(), true);
+			DatabaseService::instance().post(result);
 			return result;
 		}
 
@@ -45,10 +45,10 @@ namespace database
 		{
 			std::stringstream sql;
 			sql << "SELECT * FROM user WHERE Account = '" << account << "';";
-			auto result = std::make_shared<service::SQL>(sql.str(), true);
-			service::DatabaseService::instance().post(result);
+			auto result = std::make_shared<SQL>(sql.str(), true);
+			DatabaseService::instance().post(result);
 			return result;
 		}
 	};
 
-}}}} // namespace Albedo::Hub::server::database
+}}}} // namespace Albedo::Hub::Server::Database

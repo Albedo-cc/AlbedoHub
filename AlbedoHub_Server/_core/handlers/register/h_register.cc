@@ -7,8 +7,8 @@
 
 namespace Albedo {
 namespace Hub{
-namespace server{
-namespace handler
+namespace Server{
+namespace Handler
 {
 	
 	void HRegister::handle(std::shared_ptr<net::SignedMessage> message)
@@ -26,7 +26,7 @@ namespace handler
 			}
 			else //  Send Verification Code
 			{
-				auto res = database::UserTable::search_account(userinfo.account());
+				auto res = Database::UserTable::search_account(userinfo.account());
 				int i = 0;
 				for (; !res->hasExecuted() && i < 10; ++i)
 					std::this_thread::sleep_for(std::chrono::microseconds(1));
@@ -59,7 +59,7 @@ namespace handler
 					register_mail::get()
 				};
 				
-				service::MailService::instance().post(std::make_shared<net::Mail>(std::move(mail)));
+				MailService::instance().post(std::make_shared<net::Mail>(std::move(mail)));
 				user->send({ AlbedoProtocol::PID::REGISTER_CLIENT_SEND_VERIFICATION, 
 					"Please send your verification code" });
 				
@@ -91,7 +91,7 @@ namespace handler
 					{
 						log::info("User Register Successfully!");
 						auto& _userinfo = verification_info->second.userinfo;
-						database::UserTable::insert(_userinfo.account(), _userinfo.password(), _userinfo.name());
+						Database::UserTable::insert(_userinfo.account(), _userinfo.password(), _userinfo.name());
 						user->send({ AlbedoProtocol::PID::REGISTER_SUCCESS, "Register Successfully!" });
 					}
 					else {
@@ -109,4 +109,4 @@ namespace handler
 		}
 	} // void handle(...)
 
-}}}} // namespace Albedo::Hub::server::handler
+}}}} // namespace Albedo::Hub::Server::Handler

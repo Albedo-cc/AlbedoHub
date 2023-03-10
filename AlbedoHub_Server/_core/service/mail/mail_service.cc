@@ -2,8 +2,7 @@
 
 namespace Albedo {
 namespace Hub{
-namespace server{
-namespace service
+namespace Server
 {
 
 	void MailService::start()
@@ -47,4 +46,4 @@ namespace service
 		log::info("[Albedo Hub Server]: Mail Service Started!");
 	}
 
-}}}} // namespace Albedo::Hub::server::service
+}}} // namespace Albedo::Hub::Server
