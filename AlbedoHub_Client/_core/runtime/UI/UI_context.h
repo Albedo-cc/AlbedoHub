@@ -3,7 +3,8 @@
 
 namespace Albedo{
 namespace Hub{
-namespace Client
+namespace Client{
+namespace Runtime
 {
 	class UIContext:
 		public pattern::Singleton<UIContext>
@@ -29,4 +30,4 @@ namespace Client
 		default_user_avatar,
 	};
 
-}}} // namespace Albedo::Hub::Client
+}}}} // namespace Albedo::Hub::Client::Runtime

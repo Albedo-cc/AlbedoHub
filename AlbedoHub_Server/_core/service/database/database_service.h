@@ -90,7 +90,7 @@ namespace Server
 
 		std::string_view getSQL() const { return m_sql; }
 
-		bool hasExecuted() const { return bExecuted; } // Not lock
+		bool isExecuted() const { return bExecuted; } // Not lock
 
 		std::shared_ptr<DB::Query> getResult()
 		{

@@ -27,7 +27,7 @@ namespace Handler
 			std::string vcode;
 		};
 	public:
-		virtual void handle(std::shared_ptr<net::SignedMessage> message) override;
+		virtual void handle(std::shared_ptr<net::Envelope> message) override;
 	private:
 		std::unordered_map<User, RegisterInfo> m_verifying_users;
 

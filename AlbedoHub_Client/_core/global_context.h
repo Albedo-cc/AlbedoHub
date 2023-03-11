@@ -17,8 +17,10 @@ namespace Client
 		friend class pattern::Singleton<GlobalContext>;
 		friend class AlbedoHub;
 
-	public: // All Runtime Context
-		UIContext& g_context_UI;
+	public: 
+		// All Runtime Context
+		Runtime::NetContext& g_context_Net;
+		Runtime::UIContext& g_context_UI;
 
 	public:
 		bool isRunning() const { return m_running; }
@@ -30,8 +32,9 @@ namespace Client
 		}
 		
 	private:
-		GlobalContext():
-			g_context_UI{UIContext::instance()}
+		GlobalContext() :
+			g_context_Net{ Runtime::NetContext::instance() },
+			g_context_UI{ Runtime::UIContext::instance() }
 		{
 
 		}

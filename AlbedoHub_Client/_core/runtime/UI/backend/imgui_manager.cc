@@ -124,6 +124,7 @@ namespace Runtime
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
         glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
         glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+        
         this->window = glfwCreateWindow(1000, 600, "Albedo Hub", NULL, NULL);
         int screen_width = 0;
         int screen_height = 0;

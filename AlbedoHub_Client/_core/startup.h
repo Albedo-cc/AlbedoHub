@@ -23,7 +23,7 @@ namespace Client
 			context.m_running = true;
 			while (context.isRunning())
 			{
-				//Runtime::Net::instance().update();
+				Runtime::Net::instance().update();
 				Runtime::UI::instance().update();
 			}
 		}

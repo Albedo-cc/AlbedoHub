@@ -38,21 +38,21 @@ namespace Server
 			if (waitable) m_message_in.wait();
 			while (!m_message_in.empty() && limit_message--)
 			{
-				auto&& message = std::move(m_message_in.pop_front());
-				if (message.intact())
+				auto&& envelope = std::move(m_message_in.pop_front());
+				if (envelope.message().intact())
 				{
-					auto pMessage = std::make_shared<net::SignedMessage>(message);
+					auto pMessage = std::make_shared<net::Envelope>(envelope);
 					if(m_handler_pool.handle(std::move(pMessage)))
-						message.sender()->send({ AlbedoProtocol::PID::SUCCESS });
+						envelope.sender()->send({ AlbedoProtocol::PID::SUCCESS });
 					else
 					{
-						message.sender()->send({ AlbedoProtocol::PID::FAILED,
+						envelope.sender()->send({ AlbedoProtocol::PID::FAILED,
 						"Failed to handle message - Unknown Protocol" });
 					}
 				}
 				else
 				{
-					message.sender()->send({ AlbedoProtocol::PID::RESEND,
+					envelope.sender()->send({ AlbedoProtocol::PID::RESEND,
 						"Sorry, your message was rejected because it is not intact, please try to resend" });
 					log::warn("Received a non-intact message and it has been discarded");
 				}
@@ -63,7 +63,7 @@ namespace Server
 	private:
 		AlbedoHubServer():
 			net::Server{ SERVER_PORT },
-			m_handler_pool{ [](net::MID pid)->net::HID { return pid / 100; } }
+			m_handler_pool{ [](net::MID mID)->net::HID { return mID / 100; } }
 		{
 			log::info("[Albedo Hub Server]: Starting (Port {})", SERVER_PORT);
 			// Start Services

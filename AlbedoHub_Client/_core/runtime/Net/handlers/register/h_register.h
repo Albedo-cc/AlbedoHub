@@ -4,27 +4,23 @@
 #include <AlbedoProtocol.pb.h>
 
 #include <memory>
+#include <string>
 #include <exception>
 
 namespace Albedo {
 namespace Hub{
 namespace Client{
-namespace Runtime
+namespace Runtime{
+namespace Handler
 {
-	struct RegisterResult
-	{
-		RegisterResult() = delete;
-		RegisterResult(AlbedoProtocol::PID pid) : pid{ pid }{}
-		AlbedoProtocol::PID pid = AlbedoProtocol::PID::REGISTER_FAILED;
-	};
-	
+
 	class HRegister:
 		public net::Handler
 	{
 	public:
-		virtual void handle(std::shared_ptr<net::SignedMessage> message) override;
+		virtual void handle(std::shared_ptr<net::Envelope> message) override;
 	private:
 
 	};
 
-}}}} // namespace Albedo::Hub::Client::Runtime
+}}}}} // namespace Albedo::Hub::Client::Runtime::Handler

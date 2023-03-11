@@ -11,26 +11,27 @@ namespace Server{
 namespace Handler
 {
 	
-	void HRegister::handle(std::shared_ptr<net::SignedMessage> message)
+	void HRegister::handle(std::shared_ptr<net::Envelope> envelope)
 	{
-		auto message_id = message->header.message_id;
-		auto& user = message->sender();
-		
+		auto& message = envelope->message();
+		auto& user = envelope->sender();
+		auto message_id = message.header.message_id;
+
 		if (message_id == AlbedoProtocol::PID::REGISTER_CLIENT_SEND_REQUEST)
 		{
 			RegisterProtocol::UserInfo userinfo;
-			if (!userinfo.ParseFromString(message->body.message))
+			if (!userinfo.ParseFromString(message.body.message))
 			{
-				log::warn("Failed to parse a binary protobuf: {}", message->body.message);
+				log::warn("Failed to parse a binary protobuf: {}", message.body.message);
 				user->send({ AlbedoProtocol::PID::REGISTER_FAILED, "Invalid Protocol Buffers!" });
 			}
 			else //  Send Verification Code
 			{
 				auto res = Database::UserTable::search_account(userinfo.account());
 				int i = 0;
-				for (; !res->hasExecuted() && i < 10; ++i)
+				for (; !res->isExecuted() && i < 1000; ++i)
 					std::this_thread::sleep_for(std::chrono::microseconds(1));
-				if (res->hasExecuted())
+				if (res->isExecuted())
 				{
 					if (!res->getResult()->get_result()->empty())
 					{
@@ -71,9 +72,9 @@ namespace Handler
 		else if (message_id == AlbedoProtocol::PID::REGISTER_CLIENT_SEND_VERIFICATION)
 		{
 			RegisterProtocol::Verification vcode;
-			if (!vcode.ParseFromString(message->body.message))
+			if (!vcode.ParseFromString(message.body.message))
 			{
-				log::warn("Failed to parse a binary protobuf: {}", message->body.message);
+				log::warn("Failed to parse a binary protobuf: {}", message.body.message);
 				user->send({ AlbedoProtocol::PID::REGISTER_FAILED, "Invalid Protocol Buffers!" });
 			}
 			else // Verify

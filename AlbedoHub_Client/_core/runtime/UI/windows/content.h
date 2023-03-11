@@ -1,11 +1,14 @@
 #pragma once
 
-#include "window.h"
 #include "../backend/image_loader.h"
 #include "../../../global_context.h"
 #include "../UI_context.h"
 
+#include "window.h"
 #include "menu.h"
+
+#include <AlbedoProtocol.pb.h>
+#include <register_protocol.pb.h>
 
 namespace Albedo {
 namespace Hub{
@@ -52,7 +55,11 @@ namespace Runtime
 	private:
 		void draw_home_page()
 		{
-			
+			ImGui::Text("Online = %d", GlobalContext::instance().g_context_Net.isOnline);
+			if (!GlobalContext::instance().g_context_Net.isOnline && ImGui::Button("Connect"))
+			{
+				GlobalContext::instance().g_context_Net.tryToConnect = true;
+			}
 		}
 
 		void draw_sign_in_out_page()
@@ -67,12 +74,35 @@ namespace Runtime
 				if ((!buffer[idx] && buffer[idx + 41]) || buffer[idx] != buffer[idx + 41])
 					is_passwords_equal = false;
 			if (!is_passwords_equal) ImGui::Text("Different Passwords!");
+
+			static std::shared_ptr<NetRequest> net_req;
+			auto& net = GlobalContext::instance().g_context_Net;
 			if (ImGui::Button("Get Verification Code"))
 			{
 				log::info("Get VCode");
+
+				RegisterProtocol::UserInfo userinfo{ };
+				userinfo.set_name(std::string(buffer));
+				userinfo.set_account(std::string(buffer + 41));
+				userinfo.set_password(std::string(buffer + 106));
+				
+				if (net_req == nullptr)
+				{
+					net_req = std::make_shared<NetRequest>
+					(
+						net::Message
+						{
+							AlbedoProtocol::PID::REGISTER_CLIENT_SEND_REQUEST,
+							userinfo.SerializeAsString()
+						}
+					);
+					net.sendRequest(net_req);
+				}
+				
 			}
 			ImGui::InputTextWithHint("Verfication Code", "", buffer + 188, 6);
-			if (ImGui::Button("Register"))
+			
+			if (net.isOnline && ImGui::Button("Register"))
 			{
 				log::info("Register");
 			}
