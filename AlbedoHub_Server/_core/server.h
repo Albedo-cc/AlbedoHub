@@ -19,7 +19,7 @@ namespace Server
 	
 	class AlbedoHubServer:
 		public pattern::Singleton<AlbedoHubServer>,
-		public net::Server
+		public net::BasicServer
 	{
 		friend class pattern::Singleton<AlbedoHubServer>;
 
@@ -38,21 +38,21 @@ namespace Server
 			if (waitable) m_message_in.wait();
 			while (!m_message_in.empty() && limit_message--)
 			{
-				auto&& envelope = std::move(m_message_in.pop_front());
-				if (envelope.message().intact())
+				auto envelope = std::make_shared<net::Envelope>(std::move(m_message_in.pop_front()));
+
+				if (envelope->message().intact())
 				{
-					auto pMessage = std::make_shared<net::Envelope>(envelope);
-					if(m_handler_pool.handle(std::move(pMessage)))
-						envelope.sender()->send({ AlbedoProtocol::PID::SUCCESS });
-					else
+					if (!envelope->sender())
+						log::error("NO SENDER!! -- EXPERIED");
+					if(!m_handler_pool.handle(envelope))
 					{
-						envelope.sender()->send({ AlbedoProtocol::PID::FAILED,
+						envelope->sender()->send({ AlbedoProtocol::PID::FAILED,
 						"Failed to handle message - Unknown Protocol" });
 					}
 				}
 				else
 				{
-					envelope.sender()->send({ AlbedoProtocol::PID::RESEND,
+					envelope->sender()->send({ AlbedoProtocol::PID::RESEND,
 						"Sorry, your message was rejected because it is not intact, please try to resend" });
 					log::warn("Received a non-intact message and it has been discarded");
 				}
@@ -62,7 +62,7 @@ namespace Server
 		net::HandlerPool m_handler_pool;
 	private:
 		AlbedoHubServer():
-			net::Server{ SERVER_PORT },
+			net::BasicServer{ SERVER_PORT },
 			m_handler_pool{ [](net::MID mID)->net::HID { return mID / 100; } }
 		{
 			log::info("[Albedo Hub Server]: Starting (Port {})", SERVER_PORT);

@@ -21,7 +21,6 @@ namespace Runtime
     public:
         void update()
         {
-
             if (MImGUI.shoudClose())
                 GlobalContext::instance().shutdown("UI Layer - glfwWindowShouldClose()");
             if (!GlobalContext::instance().isRunning()) return;

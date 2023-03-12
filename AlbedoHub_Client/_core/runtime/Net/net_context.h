@@ -1,30 +1,17 @@
 #pragma once
 
-#define ALBEDONET_CLIENT
-#include <AlbedoNet.hpp>
 #include <AlbedoPattern.hpp>
 #include <AlbedoLog.hpp>
+#define ALBEDONET_CLIENT
+#include <AlbedoNet.hpp>
 
 #include <memory>
-#include <deque>
-#include <optional>
-#include <unordered_map>
 
 namespace Albedo {
 namespace Hub{
 namespace Client{
 namespace Runtime
 {
-	struct NetRequest
-	{
-		NetRequest() = delete;
-		NetRequest(net::Message msg) :message{ std::move(msg) } {}
-		net::Message message;
-		std::string response;
-		std::optional<bool> complete;
-		bool isExecuted() { return complete.has_value(); }
-	};
-
 	class NetContext:
 		public pattern::Singleton<NetContext>
 	{
@@ -34,23 +21,17 @@ namespace Runtime
 		bool tryToConnect = false;
 		bool isOnline = false;
 
-	public:
-		bool sendRequest(std::shared_ptr<NetRequest> request)
+		void sendMessage(net::Message message)
 		{
-			auto& feedback = m_feedbacks[request->message.header.message_id];
-			if (feedback == nullptr)
-			{
-				feedback.swap(request);
-				m_requests.emplace_back(feedback);
-				return true;
-			}
-			else return false; // Waiting for being executed
+			auto envelope = std::make_shared<net::Envelope>(message, m_client.getSession());
+			m_handler_pool.handle(envelope);
 		}
 
 	private:
-		NetContext() = default;
-		std::deque<std::shared_ptr<NetRequest>> m_requests;
-		std::unordered_map<net::MID, std::shared_ptr<NetRequest>> m_feedbacks;
+		net::BasicClient m_client;
+		net::HandlerPool m_handler_pool;
+	private:
+		NetContext() : m_handler_pool{ [](net::MID mID)->net::HID {return mID / 100; } } {}
 	};
 
 }}}} // namespace Albedo::Hub::Client::Runtime

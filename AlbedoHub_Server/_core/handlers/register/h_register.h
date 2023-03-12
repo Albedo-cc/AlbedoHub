@@ -28,6 +28,7 @@ namespace Handler
 		};
 	public:
 		virtual void handle(std::shared_ptr<net::Envelope> message) override;
+		virtual ~HRegister() override  = default;
 	private:
 		std::unordered_map<User, RegisterInfo> m_verifying_users;
 

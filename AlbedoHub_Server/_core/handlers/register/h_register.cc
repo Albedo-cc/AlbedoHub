@@ -29,7 +29,7 @@ namespace Handler
 			{
 				auto res = Database::UserTable::search_account(userinfo.account());
 				int i = 0;
-				for (; !res->isExecuted() && i < 1000; ++i)
+				for (; !res->isExecuted() && i < 100; ++i)
 					std::this_thread::sleep_for(std::chrono::microseconds(1));
 				if (res->isExecuted())
 				{
@@ -61,7 +61,7 @@ namespace Handler
 				};
 				
 				MailService::instance().post(std::make_shared<net::Mail>(std::move(mail)));
-				user->send({ AlbedoProtocol::PID::REGISTER_CLIENT_SEND_VERIFICATION, 
+				user->send({ AlbedoProtocol::PID::REGISTER_SUCCESS,
 					"Please send your verification code" });
 				
 				m_verifying_users.emplace(
@@ -84,7 +84,7 @@ namespace Handler
 				{
 					log::warn("Failed to verify a invalid user");
 					user->send({ AlbedoProtocol::PID::REGISTER_FAILED,
-						"Registration is rejected because  your socket may be changed!" });
+						"Registration is rejected because  your socket may be changed or last register failed!" });
 				}
 				else
 				{
@@ -97,7 +97,7 @@ namespace Handler
 					}
 					else {
 						log::info("User Register Failed!");
-						user->send({ AlbedoProtocol::PID::REGISTER_FAILED, "Register Failed!" });
+						user->send({ AlbedoProtocol::PID::REGISTER_FAILED, "Register Failed! Please request verificaition code again!" });
 					}
 					m_verifying_users.erase(user); // Future: save unverified user in the database
 				}

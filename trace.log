@@ -1,0 +1,5 @@
+[info] [2023-03-12 18:15:30] Albedo Hub started.
+[info] [2023-03-12 18:15:30] initializing Dear ImGUI
+[error] [2023-03-12 18:15:32] Failed to load image resource/image/ui_title_bar.png
+[info] [2023-03-12 18:15:32] Releasing Dear ImGUI
+[info] [2023-03-12 18:15:32] Albedo Hub is closing.

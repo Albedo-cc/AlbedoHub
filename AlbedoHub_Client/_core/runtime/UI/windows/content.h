@@ -3,12 +3,10 @@
 #include "../backend/image_loader.h"
 #include "../../../global_context.h"
 #include "../UI_context.h"
+#include "../../runtime_events.h"
 
 #include "window.h"
 #include "menu.h"
-
-#include <AlbedoProtocol.pb.h>
-#include <register_protocol.pb.h>
 
 namespace Albedo {
 namespace Hub{
@@ -65,47 +63,46 @@ namespace Runtime
 		void draw_sign_in_out_page()
 		{
 			static char buffer[(40 + 1) + (64 + 1) + (40 + 1) * 2 + (6 + 1)] = "";
-			ImGui::InputTextWithHint("Name", "", buffer, 40, ImGuiInputTextFlags_CharsNoBlank);
-			ImGui::InputTextWithHint("EMail", "", buffer + 41, 64, ImGuiInputTextFlags_CharsNoBlank);
-			ImGui::InputTextWithHint("Password", "", buffer + 106, 40, ImGuiInputTextFlags_Password | ImGuiInputTextFlags_CharsNoBlank);
-			ImGui::InputTextWithHint("Confirm", "Reinput your password", buffer + 147, 40, ImGuiInputTextFlags_Password | ImGuiInputTextFlags_CharsNoBlank);
-			bool is_passwords_equal = true;
-			for (int idx = 106;is_passwords_equal && idx < 147; ++idx)
-				if ((!buffer[idx] && buffer[idx + 41]) || buffer[idx] != buffer[idx + 41])
-					is_passwords_equal = false;
-			if (!is_passwords_equal) ImGui::Text("Different Passwords!");
-
-			static std::shared_ptr<NetRequest> net_req;
-			auto& net = GlobalContext::instance().g_context_Net;
-			if (ImGui::Button("Get Verification Code"))
-			{
-				log::info("Get VCode");
-
-				RegisterProtocol::UserInfo userinfo{ };
-				userinfo.set_name(std::string(buffer));
-				userinfo.set_account(std::string(buffer + 41));
-				userinfo.set_password(std::string(buffer + 106));
-				
-				if (net_req == nullptr)
-				{
-					net_req = std::make_shared<NetRequest>
-					(
-						net::Message
-						{
-							AlbedoProtocol::PID::REGISTER_CLIENT_SEND_REQUEST,
-							userinfo.SerializeAsString()
-						}
-					);
-					net.sendRequest(net_req);
-				}
-				
-			}
-			ImGui::InputTextWithHint("Verfication Code", "", buffer + 188, 6);
+			ImGui::InputTextWithHint("Name", "", buffer, 41, ImGuiInputTextFlags_CharsNoBlank);
+			ImGui::InputTextWithHint("EMail", "", buffer + 41, 65, ImGuiInputTextFlags_CharsNoBlank);
+			ImGui::InputTextWithHint("Password", "", buffer + 106, 41, ImGuiInputTextFlags_Password | ImGuiInputTextFlags_CharsNoBlank);
+			ImGui::InputTextWithHint("Confirm", "Reinput your password", buffer + 147, 41, ImGuiInputTextFlags_Password | ImGuiInputTextFlags_CharsNoBlank);
 			
-			if (net.isOnline && ImGui::Button("Register"))
+			// Check Password
 			{
-				log::info("Register");
+				bool is_passwords_equal = true;
+				for (int idx = 106; is_passwords_equal && idx < 147; ++idx)
+					if ((!buffer[idx] && buffer[idx + 41]) || buffer[idx] != buffer[idx + 41])
+						is_passwords_equal = false;
+				if (!is_passwords_equal) ImGui::Text("Different Passwords!");
 			}
+
+			static bool event_has_sent = false;
+			static bool res = false;
+			static std::string prompt;
+			if (event_has_sent) res = RegisterEvent::isTriggered();
+			if (res)
+			{
+				auto [result, feedback] = RegisterEvent::getResult();
+				prompt = (result ? "Successed" : "Failed") + feedback;
+				event_has_sent = false;
+				res = false;
+			}
+
+			if ( ImGui::Button("Get Verification Code"))
+			{
+				RegisterEvent::sendUserInfo(buffer, buffer + 41, buffer + 106);
+				event_has_sent = true;
+			}
+			ImGui::InputTextWithHint("Verfication Code", "", buffer + 188, 7);
+			
+			if (ImGui::Button("Register"))
+			{
+				RegisterEvent::sendVerificationCode(buffer + 188);
+				event_has_sent = true;
+			}
+
+			ImGui::Text(prompt.c_str());
 		}
 
 	protected:

@@ -20,11 +20,13 @@ namespace Client
 		void start()
 		{
 			auto& context = GlobalContext::instance();
+			auto& layer_net = Runtime::Net::instance(); // Bind Context
+			auto& layer_UI = Runtime::UI::instance(); // Bind Context
 			context.m_running = true;
 			while (context.isRunning())
 			{
-				Runtime::Net::instance().update();
-				Runtime::UI::instance().update();
+				layer_net.update();
+				layer_UI.update();
 			}
 		}
 	private:

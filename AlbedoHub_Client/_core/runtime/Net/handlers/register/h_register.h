@@ -1,11 +1,6 @@
 #pragma once
 
 #include <AlbedoNet.hpp>
-#include <AlbedoProtocol.pb.h>
-
-#include <memory>
-#include <string>
-#include <exception>
 
 namespace Albedo {
 namespace Hub{
@@ -19,8 +14,7 @@ namespace Handler
 	{
 	public:
 		virtual void handle(std::shared_ptr<net::Envelope> message) override;
-	private:
-
+		virtual ~HRegister() override = default;
 	};
 
 }}}}} // namespace Albedo::Hub::Client::Runtime::Handler
