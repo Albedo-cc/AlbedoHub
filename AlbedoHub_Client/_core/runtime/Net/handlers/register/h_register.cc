@@ -21,6 +21,7 @@ namespace Handler
 		auto& sender = envelope->sender();
 		auto message_id = message.header.message_id;
 		log::info("Reg Handling {} ", message_id);
+
 		if (message_id == AlbedoProtocol::REGISTER_CLIENT_SEND_REQUEST)
 		{
 			sender->send(message);

@@ -10,7 +10,7 @@ int main(int argc, char* argv[])
 	{
 		AlbedoHubServer::instance().start();
 	}
-	catch (std::runtime_error& e)
+	catch (std::exception& e)
 	{
 		log::error("[Albedo Hub Server (Unsolved Exception)]: {}", e.what());
 	}
