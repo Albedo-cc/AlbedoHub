@@ -4,10 +4,10 @@ if (NOT TARGET Albedo::log)
     add_subdirectory(AlbedoLog)
 endif()
 
-# Albedo Pattern
-if (NOT TARGET Albedo::pattern)
-    message(STATUS "\nLoading Albedo Pattern (Albedo::pattern)")
-    add_subdirectory(AlbedoPattern)
+# Albedo Utils
+if (NOT TARGET Albedo::utils)
+    message(STATUS "\nLoading Albedo Utils (Albedo::utils)")
+    add_subdirectory(AlbedoUtils)
 endif()
 
 # Albedo Net
@@ -36,7 +36,7 @@ add_library(AlbedoHub_Common_Libs INTERFACE)
 target_link_libraries(AlbedoHub_Common_Libs
     INTERFACE
     Albedo::log
-    Albedo::pattern
+    Albedo::utils
     Albedo::net
     JSON
     protobuf)

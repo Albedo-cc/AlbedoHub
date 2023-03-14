@@ -23,7 +23,7 @@ include(target_put_into_folder)
 # Common
 target_put_into_folder(AlbedoLog "AlbedoHub/Extern/Common/AlbedoLog")
     target_put_into_folder(spdlog "AlbedoHub/Extern/Common/AlbedoLog/3rdParty/spdlog")
-target_put_into_folder(AlbedoPattern "AlbedoHub/Extern/Common/AlbedoPattern")
+target_put_into_folder(AlbedoUtils "AlbedoHub/Extern/Common/AlbedoUtils")
 target_put_into_folder(AlbedoNet "AlbedoHub/Extern/Common/AlbedoNet")
     target_put_into_folder(asio "AlbedoHub/Extern/Common/AlbedoNet/3rdParty/ASIO")
     target_put_into_folder(cryptopp "AlbedoHub/Extern/Common/AlbedoNet/3rdParty/Crypto++")
