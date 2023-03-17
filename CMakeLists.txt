@@ -10,8 +10,9 @@ set(CMAKE_CXX_EXTENSIONS OFF) # Vendor-specific Extensions
 
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/_script")
 
-add_subdirectory(_common)
+include(check_in_source_build)
 
+add_subdirectory(_common)
 
 add_subdirectory(AlbedoHub_Client)
 add_subdirectory(AlbedoHub_Server)
