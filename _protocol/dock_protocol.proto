@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package DockProtocol;
+
+message ShakeHand
+{
+    string name = 1;
+    string intro = 2;
+    string pass = 3;
+    int32  limit = 4;
+}
+
+message DockerList
+{
+    repeated ShakeHand dockers = 1;
+}

@@ -7,11 +7,15 @@
 
 #include <memory>
 
+// Protocols
+#include <dock_protocol.pb.h>
+
 namespace Albedo {
 namespace Hub{
 namespace Client{
 namespace Runtime
 {
+
 	class NetContext:
 		public pattern::Singleton<NetContext>
 	{
@@ -27,9 +31,16 @@ namespace Runtime
 			m_handler_pool.handle(envelope);
 		}
 
+		void updateDockerList(std::shared_ptr<DockProtocol::DockerList> newlist)
+		{
+			m_dockerlist.swap(newlist);
+		}
+
 	private:
 		net::BasicClient m_client;
 		net::HandlerPool m_handler_pool;
+		std::shared_ptr<DockProtocol::DockerList> m_dockerlist;
+
 	private:
 		NetContext() : m_handler_pool{ [](net::MID mID)->net::HID {return mID / 100; } } {}
 	};

@@ -3,8 +3,6 @@
 #include "../../service/database/tables/user.h"
 #include <AlbedoProtocol.pb.h>
 
-#include <chrono>
-
 namespace Albedo {
 namespace Hub{
 namespace Server{

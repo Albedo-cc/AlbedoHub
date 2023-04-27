@@ -60,6 +60,7 @@ namespace Server
 		}
 	private:
 		net::HandlerPool m_handler_pool;
+
 	private:
 		AlbedoHubServer():
 			net::BasicServer{ SERVER_PORT },
