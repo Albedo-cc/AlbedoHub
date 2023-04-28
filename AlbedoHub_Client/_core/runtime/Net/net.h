@@ -32,9 +32,13 @@ namespace Runtime
 			{
 				auto envelope = std::make_shared<net::Envelope>(std::move(envelopes.pop_front()));
 
-				if (false == context.m_handler_pool.handle(envelope))
-					log::warn("Failed to handle a message - No suitable handlers for MID {}",
-						envelope->message().header.message_id);
+				if (envelope->message().intact())
+				{
+					if (false == context.m_handler_pool.handle(envelope))
+						log::warn("Failed to handle a message - No suitable handlers for MID {}",
+							envelope->message().header.message_id);
+				}
+				else log::warn("Discarded a non-intact message from server!");
 			}
 		}
 
@@ -46,6 +50,7 @@ namespace Runtime
 
 			// Register Handlers
 			context.m_handler_pool.regist(1, std::make_shared<Handler::HRegister>());
+			context.m_handler_pool.regist(10, std::make_shared<Handler::HDock>());
 		}
 
 	private:

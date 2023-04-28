@@ -24,8 +24,11 @@ namespace Handler
 		if (message_id == AlbedoProtocol::DOCK_SEND_DOCKERLIST)
 		{
 			auto newlist = std::make_shared<DockProtocol::DockerList>();
-			newlist->ParseFromString(message.body.message);
-			NetContext::instance().updateDockerList(newlist);
+			if (newlist->ParseFromString(message.body.message))
+			{
+				NetContext::instance().updateDockerList(newlist);
+			}
+			else log::warn("Failed to parse a dockerlist protobuf!");
 		}
 		else throw std::runtime_error("Failed to handle dock! - Unknow Protocol");
 	}

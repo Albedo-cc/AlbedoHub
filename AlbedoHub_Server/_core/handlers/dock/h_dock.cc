@@ -24,7 +24,7 @@ namespace Handler
 			}
 			else
 			{
-
+				log::warn("Shaking hands (Under Construction)");
 			}
 		}
 		else if (message_id == AlbedoProtocol::PID::DOCK_ALIVE)

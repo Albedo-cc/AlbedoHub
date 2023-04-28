@@ -53,10 +53,41 @@ namespace Runtime
 	private:
 		void draw_home_page()
 		{
-			ImGui::Text("Online = %d", GlobalContext::instance().g_context_Net.isOnline);
-			if (!GlobalContext::instance().g_context_Net.isOnline && ImGui::Button("Connect"))
+			auto& netContext = GlobalContext::instance().g_context_Net;
+			bool is_online = netContext.isOnline;
+
+			ImGui::Text("Online = %s", is_online ? "Yes" : "No");
+			if (is_online) ImGui::BeginDisabled();
 			{
-				GlobalContext::instance().g_context_Net.tryToConnect = true;
+				ImGui::SameLine();
+				if (ImGui::Button("Connect"))
+				{
+					netContext.tryToConnect = true;
+				}
+			}
+			if (is_online) ImGui::EndDisabled();
+
+			static int32_t selected_docker = -1;
+			if (is_online)
+			{
+				auto docklist = netContext.getDockList();
+				size_t docklist_size = docklist->dockers_size();
+				if (!docklist_size) selected_docker = -1;
+
+				if (ImGui::BeginListBox("Online Servers", ImVec2(-FLT_MIN, 30 * ImGui::GetTextLineHeightWithSpacing())))
+				{
+					for (size_t i = 0; i < docklist_size; ++i)
+					{
+						bool is_selected = (selected_docker == i);
+						auto& curDocker = (docklist->dockers())[i];
+						std::string servername = curDocker.name() + " ( " + curDocker.intro() + " )";
+						if (ImGui::Selectable(servername.c_str(), is_selected))
+							selected_docker = i;
+
+						if (is_selected) ImGui::SetItemDefaultFocus();
+					}
+					ImGui::EndListBox();
+				}
 			}
 		}
 
@@ -77,25 +108,27 @@ namespace Runtime
 				if (!is_passwords_equal) ImGui::Text("Different Passwords!");
 			}
 
+			ImGui::InputTextWithHint("Verfication Code", "", buffer + 188, 7);
+
 			static bool event_has_sent = false;
 			static bool res = false;
 			static std::string prompt;
+
 			if (event_has_sent) res = RegisterEvent::isTriggered();
 			if (res)
 			{
 				auto [result, feedback] = RegisterEvent::getResult();
-				prompt = (result ? "Successed" : "Failed") + feedback;
+				prompt = (result ? "Successed: " : "Failed: ") + feedback;
 				event_has_sent = false;
 				res = false;
 			}
 
-			if ( ImGui::Button("Get Verification Code"))
+			if (ImGui::Button("Get Verification Code"))
 			{
 				RegisterEvent::sendUserInfo(buffer, buffer + 41, buffer + 106);
 				event_has_sent = true;
 			}
-			ImGui::InputTextWithHint("Verfication Code", "", buffer + 188, 7);
-			
+			ImGui::SameLine();
 			if (ImGui::Button("Register"))
 			{
 				RegisterEvent::sendVerificationCode(buffer + 188);

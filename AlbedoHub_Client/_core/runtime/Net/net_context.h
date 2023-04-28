@@ -31,6 +31,8 @@ namespace Runtime
 			m_handler_pool.handle(envelope);
 		}
 
+		std::shared_ptr<DockProtocol::DockerList> getDockList() { return m_dockerlist; }
+
 		void updateDockerList(std::shared_ptr<DockProtocol::DockerList> newlist)
 		{
 			m_dockerlist.swap(newlist);
@@ -42,7 +44,10 @@ namespace Runtime
 		std::shared_ptr<DockProtocol::DockerList> m_dockerlist;
 
 	private:
-		NetContext() : m_handler_pool{ [](net::MID mID)->net::HID {return mID / 100; } } {}
+		NetContext() : 
+			m_handler_pool{ [](net::MID mID)->net::HID {return mID / 100; } },
+			m_dockerlist{ std::make_shared<DockProtocol::DockerList>() }
+		{}
 	};
 
 }}}} // namespace Albedo::Hub::Client::Runtime

@@ -12,11 +12,15 @@ namespace Hub{
 namespace Server
 {
 
-	class Hub:
-		public pattern::Singleton<Hub>
+	class Harbor :
+		public pattern::Singleton<Harbor>
 	{
-		friend class pattern::Singleton<Hub>;
-		Hub();
+		friend class pattern::Singleton<Harbor>;
+		Harbor()
+		{
+			m_dockers.emplace_back("Test", "A server for debugging", "ALBEDO", 1);
+		};
+
 	public:
 		struct Docker
 		{
@@ -55,6 +59,6 @@ namespace Server
 	private:
 		bool m_need_update = true;
 		std::vector<Docker> m_dockers;
-    }
+	};
 
 }}} // namespace Albedo::Hub::Server
