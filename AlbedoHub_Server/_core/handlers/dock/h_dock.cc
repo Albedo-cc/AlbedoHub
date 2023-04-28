@@ -2,6 +2,8 @@
 
 #include <AlbedoProtocol.pb.h>
 
+#include <harbor.h>
+
 namespace Albedo {
 namespace Hub{
 namespace Server{
@@ -24,7 +26,9 @@ namespace Handler
 			}
 			else
 			{
-				log::warn("Shaking hands (Under Construction)");
+				log::info("A docker named {} - {}", shakeHandInfo.name(), shakeHandInfo.intro());
+				Harbor::instance().AddDocker(shakeHandInfo);
+				user->send({ AlbedoProtocol::PID::DOCK_SHAKE_HAND, "Dock Successed!" });
 			}
 		}
 		else if (message_id == AlbedoProtocol::PID::DOCK_ALIVE)

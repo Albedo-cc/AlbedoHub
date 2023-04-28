@@ -8,6 +8,8 @@
 #include "window.h"
 #include "menu.h"
 
+#include <cstdlib>
+
 namespace Albedo {
 namespace Hub{
 namespace Client{
@@ -28,6 +30,7 @@ namespace Runtime
 				case Menu::Home: draw_home_page(); break;
 				case Menu::SIGN_IN_OUT: draw_sign_in_out_page(); break;
 				case Menu::User: ImGui::Text("User Page"); break;
+				case Menu::Settings: draw_settings_page(); break;
 				default: log::warn("Selected an undefined Content!");
 				}
 			}
@@ -53,22 +56,14 @@ namespace Runtime
 	private:
 		void draw_home_page()
 		{
-			auto& netContext = GlobalContext::instance().g_context_Net;
+			auto& globalContext = GlobalContext::instance();
+			auto& netContext = globalContext.g_context_Net;
 			bool is_online = netContext.isOnline;
 
-			ImGui::Text("Online = %s", is_online ? "Yes" : "No");
-			if (is_online) ImGui::BeginDisabled();
-			{
-				ImGui::SameLine();
-				if (ImGui::Button("Connect"))
-				{
-					netContext.tryToConnect = true;
-				}
-			}
-			if (is_online) ImGui::EndDisabled();
+			ImGui::SeparatorText("Online Servers");
 
 			static int32_t selected_docker = -1;
-			if (is_online)
+			if (!is_online) ImGui::BeginDisabled();
 			{
 				auto docklist = netContext.getDockList();
 				size_t docklist_size = docklist->dockers_size();
@@ -80,14 +75,41 @@ namespace Runtime
 					{
 						bool is_selected = (selected_docker == i);
 						auto& curDocker = (docklist->dockers())[i];
-						std::string servername = curDocker.name() + " ( " + curDocker.intro() + " )";
+						std::string servername = "[ " + std::to_string(i) + " ]\t" +
+							curDocker.name() + "\t|\t" +
+							curDocker.intro() + "\t|\t" + 
+							curDocker.address() + "\t|\t" + 
+							std::to_string(curDocker.port());
 						if (ImGui::Selectable(servername.c_str(), is_selected))
+						{
 							selected_docker = i;
+							log::info("SELECTED SERVER No.{}", selected_docker);
+						}
 
-						if (is_selected) ImGui::SetItemDefaultFocus();
+						if (is_selected)
+						{
+							ImGui::SetItemDefaultFocus();
+							netContext.setSelectedDocker(curDocker.address(), curDocker.port());
+						}
 					}
 					ImGui::EndListBox();
 				}
+			}
+			if (!is_online) ImGui::EndDisabled();
+
+			ImGui::SetCursorPosX(1000 - 160 - 60);
+			if (ImGui::Button("Launch"))
+			{
+				if (selected_docker >= 0)
+				{
+					std::string address;
+					int32_t port;
+					netContext.getSelectedDocker(address, port);
+					std::string cmd{ globalContext.g_Albedo_Path + ' ' + address + ' ' + std::to_string(port)};
+					log::warn("CMD: {}", cmd);
+					system(cmd.c_str());
+				}
+				else system(globalContext.g_Albedo_Path.c_str());
 			}
 		}
 
@@ -136,6 +158,16 @@ namespace Runtime
 			}
 
 			ImGui::Text(prompt.c_str());
+		}
+
+		void draw_settings_page()
+		{
+			auto& gContext = GlobalContext::instance();
+
+			ImGui::SeparatorText("Basic");
+			ImGui::InputTextWithHint("Albedo Path", "",
+				gContext.g_Albedo_Path.data(),
+				gContext.g_Albedo_Path.size());
 		}
 
 	protected:

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <AlbedoPattern.hpp>
+#include <AlbedoTime.hpp>
 #include <AlbedoLog.hpp>
 
 #include "runtime/Net/net_context.h"
@@ -21,6 +22,7 @@ namespace Client
 		// All Runtime Context
 		Runtime::NetContext& g_context_Net;
 		Runtime::UIContext& g_context_UI;
+		std::string g_Albedo_Path;
 
 	public:
 		bool isRunning() const { return m_running; }
@@ -36,7 +38,8 @@ namespace Client
 			g_context_Net{ Runtime::NetContext::instance() },
 			g_context_UI{ Runtime::UIContext::instance() }
 		{
-
+			g_Albedo_Path = "Albedo.lnk";
+			g_Albedo_Path.resize(64);
 		}
 		bool m_running = false;
 	};

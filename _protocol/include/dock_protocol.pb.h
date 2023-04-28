@@ -184,7 +184,9 @@ class ShakeHand final :
     kNameFieldNumber = 1,
     kIntroFieldNumber = 2,
     kPassFieldNumber = 3,
+    kAddressFieldNumber = 5,
     kLimitFieldNumber = 4,
+    kPortFieldNumber = 6,
   };
   // string name = 1;
   void clear_name();
@@ -228,6 +230,20 @@ class ShakeHand final :
   std::string* _internal_mutable_pass();
   public:
 
+  // string address = 5;
+  void clear_address();
+  const std::string& address() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_address(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_address();
+  PROTOBUF_NODISCARD std::string* release_address();
+  void set_allocated_address(std::string* address);
+  private:
+  const std::string& _internal_address() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_address(const std::string& value);
+  std::string* _internal_mutable_address();
+  public:
+
   // int32 limit = 4;
   void clear_limit();
   int32_t limit() const;
@@ -235,6 +251,15 @@ class ShakeHand final :
   private:
   int32_t _internal_limit() const;
   void _internal_set_limit(int32_t value);
+  public:
+
+  // int32 port = 6;
+  void clear_port();
+  int32_t port() const;
+  void set_port(int32_t value);
+  private:
+  int32_t _internal_port() const;
+  void _internal_set_port(int32_t value);
   public:
 
   // @@protoc_insertion_point(class_scope:DockProtocol.ShakeHand)
@@ -248,7 +273,9 @@ class ShakeHand final :
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr name_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr intro_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr pass_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr address_;
     int32_t limit_;
+    int32_t port_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -590,6 +617,76 @@ inline void ShakeHand::_internal_set_limit(int32_t value) {
 inline void ShakeHand::set_limit(int32_t value) {
   _internal_set_limit(value);
   // @@protoc_insertion_point(field_set:DockProtocol.ShakeHand.limit)
+}
+
+// string address = 5;
+inline void ShakeHand::clear_address() {
+  _impl_.address_.ClearToEmpty();
+}
+inline const std::string& ShakeHand::address() const {
+  // @@protoc_insertion_point(field_get:DockProtocol.ShakeHand.address)
+  return _internal_address();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void ShakeHand::set_address(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.address_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:DockProtocol.ShakeHand.address)
+}
+inline std::string* ShakeHand::mutable_address() {
+  std::string* _s = _internal_mutable_address();
+  // @@protoc_insertion_point(field_mutable:DockProtocol.ShakeHand.address)
+  return _s;
+}
+inline const std::string& ShakeHand::_internal_address() const {
+  return _impl_.address_.Get();
+}
+inline void ShakeHand::_internal_set_address(const std::string& value) {
+  
+  _impl_.address_.Set(value, GetArenaForAllocation());
+}
+inline std::string* ShakeHand::_internal_mutable_address() {
+  
+  return _impl_.address_.Mutable(GetArenaForAllocation());
+}
+inline std::string* ShakeHand::release_address() {
+  // @@protoc_insertion_point(field_release:DockProtocol.ShakeHand.address)
+  return _impl_.address_.Release();
+}
+inline void ShakeHand::set_allocated_address(std::string* address) {
+  if (address != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.address_.SetAllocated(address, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.address_.IsDefault()) {
+    _impl_.address_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:DockProtocol.ShakeHand.address)
+}
+
+// int32 port = 6;
+inline void ShakeHand::clear_port() {
+  _impl_.port_ = 0;
+}
+inline int32_t ShakeHand::_internal_port() const {
+  return _impl_.port_;
+}
+inline int32_t ShakeHand::port() const {
+  // @@protoc_insertion_point(field_get:DockProtocol.ShakeHand.port)
+  return _internal_port();
+}
+inline void ShakeHand::_internal_set_port(int32_t value) {
+  
+  _impl_.port_ = value;
+}
+inline void ShakeHand::set_port(int32_t value) {
+  _internal_set_port(value);
+  // @@protoc_insertion_point(field_set:DockProtocol.ShakeHand.port)
 }
 
 // -------------------------------------------------------------------

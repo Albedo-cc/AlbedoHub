@@ -17,8 +17,9 @@ namespace Runtime
 		// Menu List
 		Home,
 		User,
+		Settings,
 	};
-	static std::vector<const char*> menus{ "Home", "User" };
+	static std::vector<const char*> menus{ "Home", "User", "Settings"};
 
 	class MenuWindow:
 		public Window
@@ -30,6 +31,7 @@ namespace Runtime
 			{
 				draw_user_info();
 				draw_options();
+				draw_net_state();
 			}
 			endWindow();
 		}
@@ -100,6 +102,39 @@ namespace Runtime
 				offset_y += 60.0f;
 				selected_menu++;
 			}
+		}
+
+		void draw_net_state()
+		{
+			static time::StopWatch<float> timer;
+
+			auto& netContext = GlobalContext::instance().g_context_Net;
+			bool is_online = netContext.isOnline;
+
+			if (is_online) ImGui::BeginDisabled();
+			{
+				ImGui::SetCursorPosY((600 - 24 - 30));
+
+				static int connect_wait_time = 0; // 5 secs
+				static bool should_disable = false;
+				static int delta_time = 0;
+				if (connect_wait_time)
+				{
+					delta_time = timer.split().seconds() - connect_wait_time;
+					if (delta_time >= 5) connect_wait_time = 0;
+				}
+				should_disable = is_online || connect_wait_time;
+				if (should_disable) ImGui::BeginDisabled();
+				if (ImGui::Button("Connect"))
+				{
+					connect_wait_time = timer.split().seconds();
+					netContext.tryToConnect = true;
+				}
+				if (should_disable) ImGui::EndDisabled();
+			}
+			if (is_online) ImGui::EndDisabled();
+			ImGui::SameLine();
+			ImGui::Text("Online : %s", is_online ? "O" : "X");
 		}
 	};
 }}}} // namespace Albedo::Hub::Client::Runtime

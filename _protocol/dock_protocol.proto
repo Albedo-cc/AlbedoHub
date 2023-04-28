@@ -8,6 +8,9 @@ message ShakeHand
     string intro = 2;
     string pass = 3;
     int32  limit = 4;
+
+    string address = 5;
+    int32  port = 6;
 }
 
 message DockerList

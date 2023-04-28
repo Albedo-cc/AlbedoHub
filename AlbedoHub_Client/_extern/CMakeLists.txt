@@ -33,7 +33,7 @@ endif()
 # Dear ImGui
 if (NOT TARGET imgui)
     message(STATUS "\nLoading Dear ImGui (imgui)")
-    add_subdirectory(imgui-1.89.2)
+    add_subdirectory(imgui-1.89.5)
     target_link_libraries(imgui PUBLIC vulkan)
     target_link_libraries(imgui PUBLIC glfw)
 

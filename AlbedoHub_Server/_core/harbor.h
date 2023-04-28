@@ -6,6 +6,8 @@
 
 #include <string>
 #include <vector>
+#include <string_view>
+#include <unordered_map>
 
 namespace Albedo {
 namespace Hub{
@@ -16,24 +18,19 @@ namespace Server
 		public pattern::Singleton<Harbor>
 	{
 		friend class pattern::Singleton<Harbor>;
-		Harbor()
-		{
-			m_dockers.emplace_back("Test", "A server for debugging", "ALBEDO", 1);
-		};
+		Harbor() = default;
 
 	public:
-		struct Docker
+		using Docker = DockProtocol::ShakeHand;
+		void AddDocker(Docker& docker)
 		{
-			std::string name;
-			std::string intro;
-			std::string pass;
-			int32_t limit = 0;
-		};
-
-		void AddDocker(Docker docker)
-		{
-			m_dockers.emplace_back(std::move(docker));
-			m_need_update = true;
+			auto target = m_dockers.find(docker.name());
+			if (target == m_dockers.end())
+			{
+				m_dockers.emplace(docker.name(), std::move(docker));
+				m_need_update = true;
+			}
+			else log::warn("Failed to add a docker named {}", docker.name());
 		}
 
 		const std::string& MakeDockerListString()
@@ -42,13 +39,15 @@ namespace Server
 			if (m_need_update)
 			{
 				DockProtocol::DockerList dockers;
-				for (auto& docker : m_dockers)
+				for (const auto& [name, docker] : m_dockers)
 				{
 					auto pDocker = dockers.add_dockers();
-					pDocker->set_name(docker.name);
-					pDocker->set_intro(docker.intro);
-					pDocker->set_pass(docker.pass);
-					pDocker->set_limit(docker.limit);
+					pDocker->set_name(docker.name());
+					pDocker->set_intro(docker.intro());
+					pDocker->set_pass(docker.pass());
+					pDocker->set_limit(docker.limit());
+					pDocker->set_address(docker.address());
+					pDocker->set_port(docker.port());
 				}
 				dockers.SerializeToString(&dockerList);
 				m_need_update = false;
@@ -58,7 +57,7 @@ namespace Server
 
 	private:
 		bool m_need_update = true;
-		std::vector<Docker> m_dockers;
+		std::unordered_map<std::string_view, Docker> m_dockers;
 	};
 
 }}} // namespace Albedo::Hub::Server

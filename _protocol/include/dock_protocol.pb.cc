@@ -26,7 +26,9 @@ PROTOBUF_CONSTEXPR ShakeHand::ShakeHand(
     /*decltype(_impl_.name_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
   , /*decltype(_impl_.intro_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
   , /*decltype(_impl_.pass_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.address_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
   , /*decltype(_impl_.limit_)*/0
+  , /*decltype(_impl_.port_)*/0
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct ShakeHandDefaultTypeInternal {
   PROTOBUF_CONSTEXPR ShakeHandDefaultTypeInternal()
@@ -66,6 +68,8 @@ const uint32_t TableStruct_dock_5fprotocol_2eproto::offsets[] PROTOBUF_SECTION_V
   PROTOBUF_FIELD_OFFSET(::DockProtocol::ShakeHand, _impl_.intro_),
   PROTOBUF_FIELD_OFFSET(::DockProtocol::ShakeHand, _impl_.pass_),
   PROTOBUF_FIELD_OFFSET(::DockProtocol::ShakeHand, _impl_.limit_),
+  PROTOBUF_FIELD_OFFSET(::DockProtocol::ShakeHand, _impl_.address_),
+  PROTOBUF_FIELD_OFFSET(::DockProtocol::ShakeHand, _impl_.port_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::DockProtocol::DockerList, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -76,7 +80,7 @@ const uint32_t TableStruct_dock_5fprotocol_2eproto::offsets[] PROTOBUF_SECTION_V
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, -1, sizeof(::DockProtocol::ShakeHand)},
-  { 10, -1, -1, sizeof(::DockProtocol::DockerList)},
+  { 12, -1, -1, sizeof(::DockProtocol::DockerList)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -85,15 +89,16 @@ static const ::_pb::Message* const file_default_instances[] = {
 };
 
 const char descriptor_table_protodef_dock_5fprotocol_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
-  "\n\023dock_protocol.proto\022\014DockProtocol\"E\n\tS"
+  "\n\023dock_protocol.proto\022\014DockProtocol\"d\n\tS"
   "hakeHand\022\014\n\004name\030\001 \001(\t\022\r\n\005intro\030\002 \001(\t\022\014\n"
-  "\004pass\030\003 \001(\t\022\r\n\005limit\030\004 \001(\005\"6\n\nDockerList"
-  "\022(\n\007dockers\030\001 \003(\0132\027.DockProtocol.ShakeHa"
-  "ndb\006proto3"
+  "\004pass\030\003 \001(\t\022\r\n\005limit\030\004 \001(\005\022\017\n\007address\030\005 "
+  "\001(\t\022\014\n\004port\030\006 \001(\005\"6\n\nDockerList\022(\n\007docke"
+  "rs\030\001 \003(\0132\027.DockProtocol.ShakeHandb\006proto"
+  "3"
   ;
 static ::_pbi::once_flag descriptor_table_dock_5fprotocol_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_dock_5fprotocol_2eproto = {
-    false, false, 170, descriptor_table_protodef_dock_5fprotocol_2eproto,
+    false, false, 201, descriptor_table_protodef_dock_5fprotocol_2eproto,
     "dock_protocol.proto",
     &descriptor_table_dock_5fprotocol_2eproto_once, nullptr, 0, 2,
     schemas, file_default_instances, TableStruct_dock_5fprotocol_2eproto::offsets,
@@ -127,7 +132,9 @@ ShakeHand::ShakeHand(const ShakeHand& from)
       decltype(_impl_.name_){}
     , decltype(_impl_.intro_){}
     , decltype(_impl_.pass_){}
+    , decltype(_impl_.address_){}
     , decltype(_impl_.limit_){}
+    , decltype(_impl_.port_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
@@ -155,7 +162,17 @@ ShakeHand::ShakeHand(const ShakeHand& from)
     _this->_impl_.pass_.Set(from._internal_pass(), 
       _this->GetArenaForAllocation());
   }
-  _this->_impl_.limit_ = from._impl_.limit_;
+  _impl_.address_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.address_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (!from._internal_address().empty()) {
+    _this->_impl_.address_.Set(from._internal_address(), 
+      _this->GetArenaForAllocation());
+  }
+  ::memcpy(&_impl_.limit_, &from._impl_.limit_,
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.port_) -
+    reinterpret_cast<char*>(&_impl_.limit_)) + sizeof(_impl_.port_));
   // @@protoc_insertion_point(copy_constructor:DockProtocol.ShakeHand)
 }
 
@@ -167,7 +184,9 @@ inline void ShakeHand::SharedCtor(
       decltype(_impl_.name_){}
     , decltype(_impl_.intro_){}
     , decltype(_impl_.pass_){}
+    , decltype(_impl_.address_){}
     , decltype(_impl_.limit_){0}
+    , decltype(_impl_.port_){0}
     , /*decltype(_impl_._cached_size_)*/{}
   };
   _impl_.name_.InitDefault();
@@ -181,6 +200,10 @@ inline void ShakeHand::SharedCtor(
   _impl_.pass_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
     _impl_.pass_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  _impl_.address_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.address_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
 }
 
@@ -198,6 +221,7 @@ inline void ShakeHand::SharedDtor() {
   _impl_.name_.Destroy();
   _impl_.intro_.Destroy();
   _impl_.pass_.Destroy();
+  _impl_.address_.Destroy();
 }
 
 void ShakeHand::SetCachedSize(int size) const {
@@ -213,7 +237,10 @@ void ShakeHand::Clear() {
   _impl_.name_.ClearToEmpty();
   _impl_.intro_.ClearToEmpty();
   _impl_.pass_.ClearToEmpty();
-  _impl_.limit_ = 0;
+  _impl_.address_.ClearToEmpty();
+  ::memset(&_impl_.limit_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&_impl_.port_) -
+      reinterpret_cast<char*>(&_impl_.limit_)) + sizeof(_impl_.port_));
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -257,6 +284,24 @@ const char* ShakeHand::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx
       case 4:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 32)) {
           _impl_.limit_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // string address = 5;
+      case 5:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 42)) {
+          auto str = _internal_mutable_address();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+          CHK_(::_pbi::VerifyUTF8(str, "DockProtocol.ShakeHand.address"));
+        } else
+          goto handle_unusual;
+        continue;
+      // int32 port = 6;
+      case 6:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 48)) {
+          _impl_.port_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -326,6 +371,22 @@ uint8_t* ShakeHand::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteInt32ToArray(4, this->_internal_limit(), target);
   }
 
+  // string address = 5;
+  if (!this->_internal_address().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_address().data(), static_cast<int>(this->_internal_address().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "DockProtocol.ShakeHand.address");
+    target = stream->WriteStringMaybeAliased(
+        5, this->_internal_address(), target);
+  }
+
+  // int32 port = 6;
+  if (this->_internal_port() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(6, this->_internal_port(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -363,9 +424,21 @@ size_t ShakeHand::ByteSizeLong() const {
         this->_internal_pass());
   }
 
+  // string address = 5;
+  if (!this->_internal_address().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_address());
+  }
+
   // int32 limit = 4;
   if (this->_internal_limit() != 0) {
     total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_limit());
+  }
+
+  // int32 port = 6;
+  if (this->_internal_port() != 0) {
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_port());
   }
 
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
@@ -395,8 +468,14 @@ void ShakeHand::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROT
   if (!from._internal_pass().empty()) {
     _this->_internal_set_pass(from._internal_pass());
   }
+  if (!from._internal_address().empty()) {
+    _this->_internal_set_address(from._internal_address());
+  }
   if (from._internal_limit() != 0) {
     _this->_internal_set_limit(from._internal_limit());
+  }
+  if (from._internal_port() != 0) {
+    _this->_internal_set_port(from._internal_port());
   }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
@@ -429,7 +508,16 @@ void ShakeHand::InternalSwap(ShakeHand* other) {
       &_impl_.pass_, lhs_arena,
       &other->_impl_.pass_, rhs_arena
   );
-  swap(_impl_.limit_, other->_impl_.limit_);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &_impl_.address_, lhs_arena,
+      &other->_impl_.address_, rhs_arena
+  );
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(ShakeHand, _impl_.port_)
+      + sizeof(ShakeHand::_impl_.port_)
+      - PROTOBUF_FIELD_OFFSET(ShakeHand, _impl_.limit_)>(
+          reinterpret_cast<char*>(&_impl_.limit_),
+          reinterpret_cast<char*>(&other->_impl_.limit_));
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata ShakeHand::GetMetadata() const {
