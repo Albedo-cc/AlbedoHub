@@ -29,7 +29,7 @@ namespace Runtime
 				{
 				case Menu::Home: draw_home_page(); break;
 				case Menu::SIGN_IN_OUT: draw_sign_in_out_page(); break;
-				case Menu::User: ImGui::Text("User Page"); break;
+				case Menu::User: draw_user_page(); break;
 				case Menu::Settings: draw_settings_page(); break;
 				default: log::warn("Selected an undefined Content!");
 				}
@@ -115,49 +115,90 @@ namespace Runtime
 
 		void draw_sign_in_out_page()
 		{
-			static char buffer[(40 + 1) + (64 + 1) + (40 + 1) * 2 + (6 + 1)] = "";
-			ImGui::InputTextWithHint("Name", "", buffer, 41, ImGuiInputTextFlags_CharsNoBlank);
-			ImGui::InputTextWithHint("EMail", "", buffer + 41, 65, ImGuiInputTextFlags_CharsNoBlank);
-			ImGui::InputTextWithHint("Password", "", buffer + 106, 41, ImGuiInputTextFlags_Password | ImGuiInputTextFlags_CharsNoBlank);
-			ImGui::InputTextWithHint("Confirm", "Reinput your password", buffer + 147, 41, ImGuiInputTextFlags_Password | ImGuiInputTextFlags_CharsNoBlank);
+			auto& netContext = GlobalContext::instance().g_context_Net;
+
+			static char buffer_signin[(64 + 1) + (40 + 1)] = "";
+			// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+			ImGui::SeparatorText("Sign In");
+			// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+			ImGui::InputTextWithHint("Your EMail", "", buffer_signin, 65, ImGuiInputTextFlags_CharsNoBlank);
+			ImGui::InputTextWithHint("Your Password", "", buffer_signin + 65, 41, ImGuiInputTextFlags_Password | ImGuiInputTextFlags_CharsNoBlank);
+			
+			static bool signio_event_has_sent = false;
+			static bool signio_result = false;
+			static std::string signio_prompt;
+
+			if (signio_event_has_sent) signio_result = SignIOEvent::isTriggered();
+			if (signio_result)
+			{
+				auto [result, feedback] = SignIOEvent::getResult();
+				signio_prompt = (result ? "Successed: " : "Failed: ") + feedback;
+
+				if (result) netContext.hasSignedIn = true;
+
+				signio_event_has_sent = false;
+				signio_result = false;
+			}
+			bool ableToSignIO = netContext.isOnline && !netContext.hasSignedIn && !signio_event_has_sent;
+			if (!ableToSignIO) ImGui::BeginDisabled();
+			if (ImGui::Button("Sign In"))
+			{
+				SignIOEvent::sendSignInInfo(buffer_signin, buffer_signin + 65);
+				signio_event_has_sent = true;
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("Sign Out")) { log::warn("Sign Out is invalid now"); }
+			if (!ableToSignIO) ImGui::EndDisabled();
+
+			ImGui::Text(signio_prompt.c_str());
+
+			ImGui::Spacing();
+			// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+			ImGui::SeparatorText("Register");
+			// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+			static char buffer_register[(40 + 1) + (64 + 1) + (40 + 1) * 2 + (6 + 1)] = "";
+			ImGui::InputTextWithHint("Name", "", buffer_register, 41, ImGuiInputTextFlags_CharsNoBlank);
+			ImGui::InputTextWithHint("EMail", "", buffer_register + 41, 65, ImGuiInputTextFlags_CharsNoBlank);
+			ImGui::InputTextWithHint("Password", "", buffer_register + 106, 41, ImGuiInputTextFlags_Password | ImGuiInputTextFlags_CharsNoBlank);
+			ImGui::InputTextWithHint("Confirm", "Reinput your password", buffer_register + 147, 41, ImGuiInputTextFlags_Password | ImGuiInputTextFlags_CharsNoBlank);
 			
 			// Check Password
 			{
 				bool is_passwords_equal = true;
 				for (int idx = 106; is_passwords_equal && idx < 147; ++idx)
-					if ((!buffer[idx] && buffer[idx + 41]) || buffer[idx] != buffer[idx + 41])
+					if ((!buffer_register[idx] && buffer_register[idx + 41]) || buffer_register[idx] != buffer_register[idx + 41])
 						is_passwords_equal = false;
 				if (!is_passwords_equal) ImGui::Text("Different Passwords!");
 			}
 
-			ImGui::InputTextWithHint("Verfication Code", "", buffer + 188, 7);
+			ImGui::InputTextWithHint("Verfication Code", "", buffer_register + 188, 7);
 
-			static bool event_has_sent = false;
-			static bool res = false;
-			static std::string prompt;
+			static bool register_event_has_sent = false;
+			static bool register_result = false;
+			static std::string register_prompt;
 
-			if (event_has_sent) res = RegisterEvent::isTriggered();
-			if (res)
+			if (register_event_has_sent) register_result = RegisterEvent::isTriggered();
+			if (register_result)
 			{
 				auto [result, feedback] = RegisterEvent::getResult();
-				prompt = (result ? "Successed: " : "Failed: ") + feedback;
-				event_has_sent = false;
-				res = false;
+				register_prompt = (result ? "Successed: " : "Failed: ") + feedback;
+				register_event_has_sent = false;
+				register_result = false;
 			}
 
 			if (ImGui::Button("Get Verification Code"))
 			{
-				RegisterEvent::sendUserInfo(buffer, buffer + 41, buffer + 106);
-				event_has_sent = true;
+				RegisterEvent::sendUserInfo(buffer_register, buffer_register + 41, buffer_register + 106);
+				register_event_has_sent = true;
 			}
 			ImGui::SameLine();
 			if (ImGui::Button("Register"))
 			{
-				RegisterEvent::sendVerificationCode(buffer + 188);
-				event_has_sent = true;
+				RegisterEvent::sendVerificationCode(buffer_register + 188);
+				register_event_has_sent = true;
 			}
 
-			ImGui::Text(prompt.c_str());
+			ImGui::Text(register_prompt.c_str());
 		}
 
 		void draw_settings_page()
@@ -170,13 +211,36 @@ namespace Runtime
 				gContext.g_Albedo_Path.size());
 		}
 
+		void draw_user_page()
+		{
+			auto& netContext = GlobalContext::instance().g_context_Net;
+
+			ImGui::SeparatorText("Basic Info");
+
+			if (netContext.user_profile == nullptr)
+			{
+				char placeholder{};
+				ImGui::InputTextWithHint("UID", "Please click the avatar and sign in first", &placeholder, 1, ImGuiInputTextFlags_ReadOnly);
+				ImGui::InputTextWithHint("Name", "Please click the avatar and sign in first", &placeholder, 1, ImGuiInputTextFlags_ReadOnly);
+			}
+			else
+			{
+				static std::string uid = std::to_string(netContext.user_profile->uid());
+				ImGui::InputText("UID", uid.data(), uid.size(), ImGuiInputTextFlags_ReadOnly);
+				static char* name = (char*)netContext.user_profile->nickname().c_str();
+				ImGui::InputText("Name", name, netContext.user_profile->nickname().size(), ImGuiInputTextFlags_ReadOnly);
+			}
+		}
+
 	protected:
 		virtual void preprocessing() override
 		{
+
 		}
 
 		virtual void postprocessing() override
 		{
+
 		}
 	};
 }}}} // namespace Albedo::Hub::Client::Runtime

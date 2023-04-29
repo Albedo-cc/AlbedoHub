@@ -15,7 +15,7 @@ namespace Handler
 		auto& user = envelope->sender();
 		auto message_id = message.header.message_id;
 
-		if (message_id == AlbedoProtocol::PID::REGISTER_CLIENT_SEND_REQUEST)
+		if (AlbedoProtocol::PID::REGISTER_CLIENT_SEND_REQUEST == message_id)
 		{
 			RegisterProtocol::UserInfo userinfo;
 			if (!userinfo.ParseFromString(message.body.message))
@@ -67,7 +67,7 @@ namespace Handler
 					RegisterInfo{ std::move(userinfo), vcode.verification_code() });
 			}
 		}
-		else if (message_id == AlbedoProtocol::PID::REGISTER_CLIENT_SEND_VERIFICATION)
+		else if (AlbedoProtocol::PID::REGISTER_CLIENT_SEND_VERIFICATION == message_id)
 		{
 			RegisterProtocol::Verification vcode;
 			if (!vcode.ParseFromString(message.body.message))

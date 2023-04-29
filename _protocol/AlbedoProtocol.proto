@@ -8,7 +8,7 @@ enum PID
     SUCCESS = 1;
     RESEND =2;
 
-    // Sign in & Sign up
+    // Register (Regiser Protocol)
     REGISTER_PLACEHOLDER_BEGIN = 100;
     REGISTER_SUCCESS = 101;
     REGISTER_FAILED = 102;
@@ -16,7 +16,14 @@ enum PID
     REGISTER_CLIENT_SEND_VERIFICATION = 104;
     REGISTER_PLACEHOLDER_END = 105;
 
-    // Dock Protocol
+    // Sign in (SignIO Protocol)
+    SIGNIN_PLACEHOLDER_BEGIN = 200;
+    SIGNIN_SUCCESS = 201;
+    SIGNIN_FAILED = 202;
+    SIGNIN_REQUEST = 203;
+    SIGNIN_PLACEHOLDER_END = 204;
+
+    // Dock (Dock Protocol)
     DOCK_PLACEHOLDER_BEGIN = 1000;
     DOCK_SHAKE_HAND = 1001;
     DOCK_ALIVE = 1002;

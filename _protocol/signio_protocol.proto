@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package SignIOProtocol;
+
+message SignInInfo
+{
+    string account = 1;
+    string password = 2;
+}
+
+message UserProfile // Feedback of Sign in
+{
+    int32 UID = 1;
+    string nickname = 2;
+}

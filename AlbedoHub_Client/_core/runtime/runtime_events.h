@@ -13,19 +13,30 @@ namespace Albedo {
  namespace Runtime
  {
      using EventResult = std::tuple<bool, std::string>;
- 	
-     struct RegisterEvent
+
+     class RuntimeEvent
      {
+     public:
          static void trigger(bool result, std::string feedback);
          static bool isTriggered() { return sm_result.has_value(); }
          static EventResult getResult();
 
+     protected:
+         inline static std::optional<bool> sm_result;
+         inline static std::string sm_feed_back;
+     };
+ 	
+     class RegisterEvent : public RuntimeEvent
+     {
+     public:
          static void sendUserInfo(std::string name, std::string account, std::string password);
          static void sendVerificationCode(std::string verification_code);
+     };
 
-     private:
-         static std::optional<bool> sm_result;
-         static std::string sm_feed_back;
+     class SignIOEvent : public RuntimeEvent
+     {
+     public:
+         static void sendSignInInfo(std::string account, std::string password);
      };
 
  }}}} // namespace Albedo::Hub::Client::Runtime

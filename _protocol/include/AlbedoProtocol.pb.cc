@@ -29,20 +29,23 @@ static constexpr ::_pbi::MigrationSchema* schemas = nullptr;
 static constexpr ::_pb::Message* const* file_default_instances = nullptr;
 
 const char descriptor_table_protodef_AlbedoProtocol_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
-  "\n\024AlbedoProtocol.proto\022\016AlbedoProtocol*\326"
-  "\002\n\003PID\022\n\n\006FAILED\020\000\022\013\n\007SUCCESS\020\001\022\n\n\006RESEN"
+  "\n\024AlbedoProtocol.proto\022\016AlbedoProtocol*\320"
+  "\003\n\003PID\022\n\n\006FAILED\020\000\022\013\n\007SUCCESS\020\001\022\n\n\006RESEN"
   "D\020\002\022\036\n\032REGISTER_PLACEHOLDER_BEGIN\020d\022\024\n\020R"
   "EGISTER_SUCCESS\020e\022\023\n\017REGISTER_FAILED\020f\022 "
   "\n\034REGISTER_CLIENT_SEND_REQUEST\020g\022%\n!REGI"
   "STER_CLIENT_SEND_VERIFICATION\020h\022\034\n\030REGIS"
-  "TER_PLACEHOLDER_END\020i\022\033\n\026DOCK_PLACEHOLDE"
-  "R_BEGIN\020\350\007\022\024\n\017DOCK_SHAKE_HAND\020\351\007\022\017\n\nDOCK"
-  "_ALIVE\020\352\007\022\031\n\024DOCK_SEND_DOCKERLIST\020\353\007\022\031\n\024"
-  "DOCK_PLACEHOLDER_END\020\354\007b\006proto3"
+  "TER_PLACEHOLDER_END\020i\022\035\n\030SIGNIN_PLACEHOL"
+  "DER_BEGIN\020\310\001\022\023\n\016SIGNIN_SUCCESS\020\311\001\022\022\n\rSIG"
+  "NIN_FAILED\020\312\001\022\023\n\016SIGNIN_REQUEST\020\313\001\022\033\n\026SI"
+  "GNIN_PLACEHOLDER_END\020\314\001\022\033\n\026DOCK_PLACEHOL"
+  "DER_BEGIN\020\350\007\022\024\n\017DOCK_SHAKE_HAND\020\351\007\022\017\n\nDO"
+  "CK_ALIVE\020\352\007\022\031\n\024DOCK_SEND_DOCKERLIST\020\353\007\022\031"
+  "\n\024DOCK_PLACEHOLDER_END\020\354\007b\006proto3"
   ;
 static ::_pbi::once_flag descriptor_table_AlbedoProtocol_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_AlbedoProtocol_2eproto = {
-    false, false, 391, descriptor_table_protodef_AlbedoProtocol_2eproto,
+    false, false, 513, descriptor_table_protodef_AlbedoProtocol_2eproto,
     "AlbedoProtocol.proto",
     &descriptor_table_AlbedoProtocol_2eproto_once, nullptr, 0, 0,
     schemas, file_default_instances, TableStruct_AlbedoProtocol_2eproto::offsets,
@@ -71,6 +74,11 @@ bool PID_IsValid(int value) {
     case 103:
     case 104:
     case 105:
+    case 200:
+    case 201:
+    case 202:
+    case 203:
+    case 204:
     case 1000:
     case 1001:
     case 1002:

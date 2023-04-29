@@ -42,7 +42,9 @@ namespace Server
 
 		virtual void handle(uint32_t limit_message = std::numeric_limits<uint32_t>::max(), bool waitable = true) override
 		{
-			if (waitable) m_message_in.wait();
+			static time::StopWatch<float> local_timer;
+			if (waitable && m_message_in.should_wait()) delete_idle_clients();
+
 			while (!m_message_in.empty() && limit_message--)
 			{
 				auto envelope = std::make_shared<net::Envelope>(std::move(m_message_in.pop_front()));
@@ -80,6 +82,7 @@ namespace Server
 			MailService::instance().start();
 			// Register Handlers
 			m_handler_pool.regist(1, std::make_shared<Handler::HRegister>());
+			m_handler_pool.regist(2, std::make_shared<Handler::HSignIO>());
 			m_handler_pool.regist(10, std::make_shared<Handler::HDock>());
 		}
 		~AlbedoHubServer() 
@@ -94,27 +97,56 @@ namespace Server
 			{
 				std::this_thread::sleep_for(std::chrono::seconds(1));
 
+				auto& netContext = ServerContext::instance();
+
 				constexpr float PERIOD_DOCKERLIST = 2.0;
 				static float period_dockerlist_sync = PERIOD_DOCKERLIST;
 				period_dockerlist_sync -= 1.0;
+				if (period_dockerlist_sync < 0)
 				{
-					if (period_dockerlist_sync < 0)
+					period_dockerlist_sync = PERIOD_DOCKERLIST;
+
+					const auto& strDockerlist = Harbor::instance().MakeDockerListString();
+
+					if (!strDockerlist.empty())
 					{
-						period_dockerlist_sync = PERIOD_DOCKERLIST;
-
-						const auto& strDockerlist = Harbor::instance().MakeDockerListString();
-
-						if (!strDockerlist.empty())
-						{
-							log::info("Synchronizing Dock List!");
-							Message docklist{AlbedoProtocol::DOCK_SEND_DOCKERLIST, strDockerlist };
-							sendToAll(docklist);
-						}
+						log::info("Synchronizing Dock List to {} users", netContext.m_online_users.size());
+						Message docklist{AlbedoProtocol::DOCK_SEND_DOCKERLIST, strDockerlist };
+						sendToGroup(netContext.m_online_users, docklist);
 					}
-				} // dockerlist task
-
+				}
+				 // dockerlist task
 			} // end while
 			
+		}
+
+		void delete_idle_clients() override
+		{
+			constexpr float PERIOD_DELETE_IDLE_SESSIONS = 10.0;
+			auto& netContext = ServerContext::instance();
+
+			static time::StopWatch<float> timer;
+			static float prevTime = timer.split().seconds();
+			float curTime = timer.split().seconds();
+
+			if (curTime - prevTime > PERIOD_DELETE_IDLE_SESSIONS)
+			{
+				prevTime = curTime;
+				uint32_t cnt = 0;
+
+				log::info("Deleting idle clients");
+				for (auto it = m_sessions.begin(); it != m_sessions.end();)
+				{
+					if ((*it) == nullptr || !(*it)->isConnected())
+					{
+						netContext.RemoveOnlineUser(*it);
+						m_sessions.erase(it++);
+						cnt++;
+					}
+					else  ++it; // Note Erase
+				}
+				log::info("Deleted {} idle clients", cnt);
+			}
 		}
 
 	};

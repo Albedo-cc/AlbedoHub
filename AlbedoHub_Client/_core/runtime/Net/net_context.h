@@ -9,6 +9,7 @@
 
 // Protocols
 #include <dock_protocol.pb.h>
+#include <signio_protocol.pb.h>
 
 namespace Albedo {
 namespace Hub{
@@ -24,6 +25,9 @@ namespace Runtime
 	public:
 		bool tryToConnect = false;
 		bool isOnline = false;
+		bool hasSignedIn = false;
+
+		std::unique_ptr<SignIOProtocol::UserProfile> user_profile;
 
 		void sendMessage(net::Message message)
 		{

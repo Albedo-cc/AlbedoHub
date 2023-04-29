@@ -27,9 +27,13 @@ namespace Database
 
 		}
 
-		static void update()
+		static auto update_login_time(std::string_view account)
 		{
-
+			std::stringstream sql;
+			sql << "UPDATE user SET Time_Login = NOW() WHERE Account = '" << account << "';";
+			auto result = std::make_shared<SQL>(sql.str(), false);
+			DatabaseService::instance().post(result);
+			return result;
 		}
 
 		static auto search(std::string_view condition)

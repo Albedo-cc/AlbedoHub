@@ -50,6 +50,7 @@ namespace Runtime
 
 			// Register Handlers
 			context.m_handler_pool.regist(1, std::make_shared<Handler::HRegister>());
+			context.m_handler_pool.regist(2, std::make_shared<Handler::HSignIO>());
 			context.m_handler_pool.regist(10, std::make_shared<Handler::HDock>());
 		}
 
