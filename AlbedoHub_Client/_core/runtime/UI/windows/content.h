@@ -8,8 +8,6 @@
 #include "window.h"
 #include "menu.h"
 
-#include <cstdlib>
-
 namespace Albedo {
 namespace Hub{
 namespace Client{
@@ -89,7 +87,7 @@ namespace Runtime
 						if (is_selected)
 						{
 							ImGui::SetItemDefaultFocus();
-							netContext.setSelectedDocker(curDocker.address(), curDocker.port());
+							netContext.setSelectedDocker(&curDocker);
 						}
 					}
 					ImGui::EndListBox();
@@ -98,18 +96,33 @@ namespace Runtime
 			if (!is_online) ImGui::EndDisabled();
 
 			ImGui::SetCursorPosX(1000 - 160 - 60);
+			static std::string cmd;
 			if (ImGui::Button("Launch"))
 			{
-				if (selected_docker >= 0)
+				if (selected_docker >= 0 && netContext.user_profile != nullptr)
 				{
-					std::string address;
-					int32_t port;
-					netContext.getSelectedDocker(address, port);
-					std::string cmd{ globalContext.g_Albedo_Path + ' ' + address + ' ' + std::to_string(port)};
-					log::warn("CMD: {}", cmd);
-					system(cmd.c_str());
+					auto selectedDocker = netContext.getSelectedDocker();
+					auto& configPath = globalContext.g_Albedo_Config_Path;
+					std::ifstream file{ configPath };
+					if (file.is_open())
+					{
+						nlohmann::json config = nlohmann::json::parse(file);
+						config["Online"] = 1; // One-Time configuration
+						config["Online_IP"] = selectedDocker->address();
+						config["Online_Port"] = selectedDocker->port();
+						config["Online_Pass"] = selectedDocker->pass();
+						file.close();
+
+						std::ofstream outfile{ configPath };
+						if (outfile.is_open())
+						{
+							outfile << std::setw(4) << config << std::endl;
+							outfile.close();
+						}
+						else log::error("Failed to save configuration {}", configPath);
+					}
+					else log::error("Failed to open configuration {}", configPath);
 				}
-				else system(globalContext.g_Albedo_Path.c_str());
 			}
 		}
 
@@ -134,7 +147,10 @@ namespace Runtime
 				auto [result, feedback] = SignIOEvent::getResult();
 				signio_prompt = (result ? "Successed: " : "Failed: ") + feedback;
 
-				if (result) netContext.hasSignedIn = true;
+				if (result)
+				{
+					netContext.hasSignedIn = true;
+				}
 
 				signio_event_has_sent = false;
 				signio_result = false;
@@ -205,10 +221,13 @@ namespace Runtime
 		{
 			auto& gContext = GlobalContext::instance();
 
-			ImGui::SeparatorText("Basic");
-			ImGui::InputTextWithHint("Albedo Path", "",
+			ImGui::SeparatorText("Application");
+			ImGui::InputTextWithHint("Albedo APP Path", "",
 				gContext.g_Albedo_Path.data(),
 				gContext.g_Albedo_Path.size());
+			ImGui::InputTextWithHint("Albedo Config Path", "",
+				gContext.g_Albedo_Config_Path.data(),
+				gContext.g_Albedo_Config_Path.size());
 		}
 
 		void draw_user_page()

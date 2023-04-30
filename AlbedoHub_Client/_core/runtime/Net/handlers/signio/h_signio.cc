@@ -7,7 +7,7 @@
 #include <register_protocol.pb.h>
 #include <signio_protocol.pb.h>
 
-#include <iostream>
+#include "../../../../global_context.h"
 
 namespace Albedo {
 namespace Hub{
@@ -34,6 +34,26 @@ namespace Handler
 			netContext.user_profile = std::make_unique<SignIOProtocol::UserProfile>();
 			if (netContext.user_profile->ParseFromString(message.body.message))
 			{
+				auto& configPath = GlobalContext::instance().g_Albedo_Config_Path;
+				std::ifstream file{ configPath };
+				if (file.is_open())
+				{
+					nlohmann::json config = nlohmann::json::parse(file);
+					config["Online_UID"] = netContext.user_profile->uid();
+					config["Online_Name"] = netContext.user_profile->nickname();
+					file.close();
+
+					std::ofstream outfile{ configPath };
+					if (outfile.is_open())
+					{
+						outfile << std::setw(4) << config << std::endl;
+						outfile.close();
+					}
+					else log::error("Failed to save configuration {}", configPath);
+				}
+				else log::error("Failed to open configuration {}", configPath);
+
+
 				SignIOEvent::trigger(true, "Welcom to Albedo Hub!");
 			}
 			else SignIOEvent::trigger(false, "Failed to parse User Profile protobuf!");

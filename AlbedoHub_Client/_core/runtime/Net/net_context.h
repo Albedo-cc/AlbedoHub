@@ -42,16 +42,14 @@ namespace Runtime
 			m_dockerlist.swap(newlist);
 		}
 
-		void setSelectedDocker(std::string_view address, int32_t port)
+		void setSelectedDocker(const DockProtocol::ShakeHand* docker)
 		{
-			m_selected_docker_address = address;
-			m_selected_docker_port = port;
+			m_selected_docker = docker;
 		}
 
-		void getSelectedDocker(std::string& address, int32_t& port)
+		const DockProtocol::ShakeHand* getSelectedDocker()
 		{
-			address = m_selected_docker_address;
-			port = m_selected_docker_port;
+			return m_selected_docker;
 		}
 
 	private:
@@ -59,8 +57,7 @@ namespace Runtime
 		net::HandlerPool m_handler_pool;
 		std::shared_ptr<DockProtocol::DockerList> m_dockerlist;
 
-		std::string_view m_selected_docker_address;
-		int32_t m_selected_docker_port;
+		const DockProtocol::ShakeHand* m_selected_docker;
 
 	private:
 		NetContext() : 
