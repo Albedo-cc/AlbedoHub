@@ -107,10 +107,12 @@ namespace Runtime
 					if (file.is_open())
 					{
 						nlohmann::json config = nlohmann::json::parse(file);
-						config["Online"] = 1; // One-Time configuration
+						config["Online"] = "1"; // One-Time configuration
 						config["Online_IP"] = selectedDocker->address();
-						config["Online_Port"] = selectedDocker->port();
+						config["Online_Port"] = std::to_string(selectedDocker->port());
 						config["Online_Pass"] = selectedDocker->pass();
+						config["Online_UID"] = std::to_string(netContext.user_profile->uid());
+						config["Online_Name"] = netContext.user_profile->nickname();
 						file.close();
 
 						std::ofstream outfile{ configPath };
@@ -118,6 +120,9 @@ namespace Runtime
 						{
 							outfile << std::setw(4) << config << std::endl;
 							outfile.close();
+
+							std::string cmd = std::format("\"{}\"", globalContext.g_Albedo_Path.c_str());
+							globalContext.SystemCall(cmd.c_str());
 						}
 						else log::error("Failed to save configuration {}", configPath);
 					}

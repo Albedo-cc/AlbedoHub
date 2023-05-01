@@ -48,10 +48,11 @@ namespace Client
 			g_context_Net{ Runtime::NetContext::instance() },
 			g_context_UI{ Runtime::UIContext::instance() }
 		{
-			g_Albedo_Path = R"(C:\Frozen Zone\MyGitHub\Albedo\build\Albedo\Debug)";
+			g_Albedo_Path = R"(Albedo.lnk)";
 			g_Albedo_Path.resize(128);
 
 			g_Albedo_Config_Path = R"(C:\Frozen Zone\MyGitHub\Albedo\build\Albedo\Debug\config.json)";
+			g_Albedo_Config_Path.resize(128);
 		}
 		bool m_running = false;
 	};
