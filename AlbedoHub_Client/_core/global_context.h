@@ -51,7 +51,7 @@ namespace Client
 			g_Albedo_Path = R"(Albedo.lnk)";
 			g_Albedo_Path.resize(128);
 
-			g_Albedo_Config_Path = R"(C:\Frozen Zone\MyGitHub\Albedo\build\Albedo\Debug\config.json)";
+			g_Albedo_Config_Path = R"(C:\Frozen Zone\MyGitHub\Albedo\build\Albedo\Release\config.json)";
 			g_Albedo_Config_Path.resize(128);
 		}
 		bool m_running = false;

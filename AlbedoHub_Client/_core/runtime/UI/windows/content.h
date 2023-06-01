@@ -67,7 +67,7 @@ namespace Runtime
 				size_t docklist_size = docklist->dockers_size();
 				if (!docklist_size) selected_docker = -1;
 
-				if (ImGui::BeginListBox("Online Servers", ImVec2(-FLT_MIN, 30 * ImGui::GetTextLineHeightWithSpacing())))
+				if (ImGui::BeginListBox("Online Servers", ImVec2(-FLT_MIN, 23 * ImGui::GetTextLineHeightWithSpacing())))
 				{
 					for (size_t i = 0; i < docklist_size; ++i)
 					{
@@ -95,7 +95,7 @@ namespace Runtime
 			}
 			if (!is_online) ImGui::EndDisabled();
 
-			ImGui::SetCursorPosX(1000 - 160 - 60);
+			ImGui::SetCursorPosX(1000 - 160 - 70);
 			static std::string cmd;
 			if (ImGui::Button("Launch"))
 			{
@@ -127,6 +127,11 @@ namespace Runtime
 						else log::error("Failed to save configuration {}", configPath);
 					}
 					else log::error("Failed to open configuration {}", configPath);
+				}
+				else // Offline Mode
+				{
+					std::string cmd = std::format("\"{}\"", globalContext.g_Albedo_Path.c_str());
+					globalContext.SystemCall(cmd.c_str());
 				}
 			}
 		}
